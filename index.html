@@ -313,6 +313,7 @@
             transform-style: preserve-3d;
             border-radius: 24px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            will-change: transform;
         }
 
         .flashcard.is-flipped .flashcard-inner {
@@ -355,7 +356,7 @@
         .word-es {
             font-size: 1.3rem;
             font-weight: 800;
-            margin-bottom: 30px;
+            margin-bottom: 30px; /* Margen que se quita en móviles */
             text-align: center;
         }
 
@@ -416,6 +417,11 @@
                 display: none !important;
             }
             
+            /* Centramos el texto al no tener botón abajo */
+            .word-es {
+                margin-bottom: 0 !important; 
+            }
+
             /* Mantener controles en una línea y solo iconos en móviles */
             .game-header {
                 flex-direction: row;
@@ -484,7 +490,7 @@
         <div style="margin-top: 40px;">
             <button class="btn-action" onclick="navigate('screenCourse')">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Go Back
+                <span class="btn-text">Go Back</span>
             </button>
         </div>
     </div>
@@ -499,8 +505,7 @@
             
             <div class="machinery-controls">
                 <label for="speedSlider">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    <span class="btn-text">Speed</span>
+                    Speed
                 </label>
                 <input type="range" id="speedSlider" min="0.5" max="6" step="0.1" value="1.5">
             </div>
@@ -514,15 +519,17 @@
         <div class="carousel-wrapper" id="carouselWrapper">
             <div class="carousel-track" id="track"></div>
             <div class="finish-message" id="finishMsg">
-                🎉 ¡Enhorabuena! 🎉
-                <span style="font-size: 1.2rem; color: #475569; margin-top: 10px; font-weight: 600;">Has completado el vocabulario.</span>
-                <button class="btn-action" style="margin-top: 20px;" onclick="startGame(currentUnit)">Jugar de nuevo</button>
+                🎉 Congratulations! 🎉
+                <span style="font-size: 1.2rem; color: #475569; margin-top: 10px; font-weight: 600;">You have completed the vocabulary.</span>
+                <button class="btn-action" style="margin-top: 20px;" onclick="startGame(currentUnit)">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                </button>
             </div>
         </div>
     </div>
 
     <footer class="disclaimer">
-        Aplicación creada con Gemini por Eduardo Ruiz (@ejruizgarcia), 2026. Licencia Creative Commons (BY-NC-ND, no comercial, usar como está).
+        Aplicación creada con Gemini por Eduardo Ruiz (@ejruizgarcia), 2026. Licencia Creative Commons (BY-NC-ND).
     </footer>
 
     <script>
@@ -1119,24 +1126,57 @@
             // Lógica táctil para detectar el deslizamiento (swipe up)
             let startY = 0;
             let startX = 0;
+            let isDragging = false;
+            let currentDiffY = 0;
 
             cardElement.addEventListener('touchstart', (e) => {
                 startY = e.touches[0].clientY;
                 startX = e.touches[0].clientX;
+                isDragging = false;
+                currentDiffY = 0;
             }, {passive: true});
+
+            cardElement.addEventListener('touchmove', (e) => {
+                // Solo permitimos el arrastre si la tarjeta está dada la vuelta y no se está borrando ya
+                if (cardElement.classList.contains('removing') || !cardElement.classList.contains('is-flipped')) return;
+
+                let currentY = e.touches[0].clientY;
+                let currentX = e.touches[0].clientX;
+                let diffY = currentY - startY; // Si sube, es negativo
+                let diffX = Math.abs(currentX - startX);
+
+                // Si se mueve hacia arriba más que hacia los lados
+                if (diffY < 0 && Math.abs(diffY) > diffX) {
+                    isDragging = true;
+                    currentDiffY = diffY;
+                    let inner = cardElement.querySelector('.flashcard-inner');
+                    
+                    // Quitamos la transición CSS para que siga al dedo de forma inmediata
+                    inner.style.transition = 'none';
+                    // Pequeño efecto de inclinación proporcional a lo que se ha subido
+                    let tilt = diffY / 20; 
+                    inner.style.transform = `rotateY(180deg) translateY(${diffY}px) rotateZ(${tilt}deg)`;
+                    
+                    e.preventDefault(); // Previene que la pantalla del móvil haga scroll al arrastrar
+                }
+            }, {passive: false});
 
             cardElement.addEventListener('touchend', (e) => {
                 if (cardElement.classList.contains('removing')) return;
                 
-                let endY = e.changedTouches[0].clientY;
-                let endX = e.changedTouches[0].clientX;
-                let diffY = startY - endY; // Positivo si desliza hacia arriba
-                let diffX = Math.abs(startX - endX);
+                let inner = cardElement.querySelector('.flashcard-inner');
+                // Restauramos la transición suave del CSS
+                inner.style.transition = ''; 
 
-                // Si el deslizamiento hacia arriba es mayor a 40px y es vertical
-                if (diffY > 40 && diffX < Math.abs(diffY)) {
+                // Si ha arrastrado más de 40px hacia arriba
+                if (isDragging && currentDiffY < -40) {
                     removeCard(cardObj, true);
+                } else {
+                    // Si no fue suficiente o no estaba arrastrando, reseteamos el estilo en línea
+                    // para que la clase CSS vuelva a aplicar el giro normal
+                    inner.style.transform = '';
                 }
+                isDragging = false;
             });
 
             cardElement.addEventListener('click', (e) => {
@@ -1169,7 +1209,7 @@
             if (isSwipe) {
                 // Efecto rápido de salida hacia arriba al deslizar
                 domElement.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
-                domElement.style.transform = `translateX(${cardObj.x}px) translateY(-300px) scale(0.6)`;
+                domElement.style.transform = `translateX(${cardObj.x}px) translateY(-500px) scale(0.8)`;
             } else {
                 // Efecto de desaparecer al pulsar el botón
                 domElement.style.transform = `translateX(${cardObj.x}px) scale(0) translateY(-50px)`;
