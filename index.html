@@ -1,1 +1,870 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VocabApp - ESO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #f4f5f7;
+            --text-dark: #1e293b;
+            --year1: #1ba1e2;
+            --year2: #d92525;
+            --year3: #eab308;
+            --year4: #8b5cf6;
+            
+            /* Temas por defecto para Unidades (cambian según el curso) */
+            --unit-bg: #fdeaea;
+            --unit-text: #9f1239;
+            --unit-hover: #fce0e0;
 
+            --card-front: #ffffff;
+            --card-back: #10b981; 
+        }
+
+        /* Clases temáticas para los cursos */
+        .theme-y1 {
+            --unit-bg: #e0f2fe;
+            --unit-text: #0369a1;
+            --unit-hover: #bae6fd;
+        }
+
+        .theme-y2 {
+            --unit-bg: #fdeaea;
+            --unit-text: #9f1239;
+            --unit-hover: #fce0e0;
+        }
+
+        .theme-y3 {
+            --unit-bg: #fef9c3;
+            --unit-text: #854d0e;
+            --unit-hover: #fef08a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .screen {
+            width: 100%;
+            max-width: 1100px;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            color: #475569;
+            margin-bottom: 40px;
+        }
+
+        /* Pantalla 1: Cursos */
+        .grid-courses {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .course-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 40px 20px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .course-btn span {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        .course-btn:hover {
+            transform: translateY(-5px);
+            filter: brightness(1.1);
+        }
+
+        .y1 { background-color: var(--year1); }
+        .y2 { background-color: var(--year2); }
+        .y3 { background-color: var(--year3); }
+        .y4 { background-color: var(--year4); }
+
+        /* Pantalla 2: Unidades */
+        .grid-units {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .unit-btn {
+            background-color: var(--unit-bg);
+            border: none;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .unit-btn h2 {
+            color: var(--unit-text);
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .unit-btn p {
+            color: var(--unit-text);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .unit-btn:hover {
+            transform: scale(1.05);
+            background-color: var(--unit-hover);
+        }
+
+        /* Pantalla 3: Juego (Carrusel) */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .machinery-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #e2e8f0;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 3px solid #cbd5e1;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .machinery-controls label {
+            font-weight: 800;
+            color: #334155;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 180px;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 28px;
+            width: 28px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, #d92525, #9f1239);
+            cursor: pointer;
+            margin-top: -10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            border: 2px solid white;
+        }
+
+        /* Varía el color del mando según el año para integrarlo más (opcional pero queda bien) */
+        .theme-y1 input[type=range]::-webkit-slider-thumb {
+            background: linear-gradient(to bottom, #0ea5e9, #0369a1);
+        }
+
+        .theme-y3 input[type=range]::-webkit-slider-thumb {
+            background: linear-gradient(to bottom, #eab308, #a16207);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #94a3b8;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .btn-action {
+            background-color: #334155;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            background-color: #1e293b;
+        }
+
+        /* Carrusel Container reescrito para no dar saltos */
+        .carousel-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            height: 380px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+        }
+
+        .carousel-track {
+            display: block; 
+            height: 100%;
+            position: relative;
+            width: 100%;
+        }
+
+        /* Tarjetas con posicionamiento absoluto */
+        .flashcard {
+            width: 230px;
+            height: 300px;
+            perspective: 1000px;
+            position: absolute;
+            top: 20px;
+            left: 0;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .flashcard.removing {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: 24px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .flashcard.is-flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            padding: 20px;
+        }
+
+        .card-front {
+            background-color: var(--card-front);
+            color: var(--text-dark);
+            border: 6px solid var(--card-back);
+        }
+
+        .word-en {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .card-back {
+            background-color: var(--card-back);
+            color: white;
+            transform: rotateY(180deg);
+            border: 6px solid #059669;
+        }
+
+        .word-es {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .btn-remove {
+            background-color: white;
+            color: #10b981;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .btn-remove:hover {
+            transform: scale(1.1);
+            background-color: #f0fdf4;
+        }
+
+        .finish-message {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #10b981;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- PANTALLA 1: SELECCIÓN DE CURSO -->
+    <div id="screenCourse" class="screen">
+        <h1>Welcome!</h1>
+        <p class="subtitle">First, select your course to start practicing.</p>
+        
+        <div class="grid-courses">
+            <button class="course-btn y1" onclick="selectCourse(1)">Year 1 <span>1st Year (A2, 12 years old)</span></button>
+            <button class="course-btn y2" onclick="selectCourse(2)">Year 2 <span>2nd Year (A2/B1, 13 years old)</span></button>
+            <button class="course-btn y3" onclick="selectCourse(3)">Year 3 <span>3rd Year (B1, 14 years old)</span></button>
+            <button class="course-btn y4">Year 4 <span>4th Year (B1/B2, 15 years old)</span></button>
+        </div>
+    </div>
+
+    <!-- PANTALLA 2: SELECCIÓN DE UNIDAD -->
+    <div id="screenUnits" class="screen hidden">
+        <h1 id="unitsTitle">Units</h1>
+        <p class="subtitle">Select the topic you want to review.</p>
+
+        <div class="grid-units" id="unitsGrid">
+            <!-- Las unidades se inyectan dinámicamente aquí -->
+        </div>
+        
+        <div style="margin-top: 40px;">
+            <button class="btn-action" onclick="navigate('screenCourse')">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Go Back
+            </button>
+        </div>
+    </div>
+
+    <!-- PANTALLA 3: EL JUEGO -->
+    <div id="screenGame" class="screen hidden">
+        <div class="game-header">
+            <button class="btn-action" onclick="navigate('screenUnits')">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Exit
+            </button>
+            
+            <div class="machinery-controls">
+                <label for="speedSlider">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Speed
+                </label>
+                <input type="range" id="speedSlider" min="0.5" max="6" step="0.1" value="1.5">
+            </div>
+
+            <button class="btn-action" onclick="startGame(currentUnit)">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                Reset
+            </button>
+        </div>
+
+        <div class="carousel-wrapper" id="carouselWrapper">
+            <div class="carousel-track" id="track"></div>
+            <div class="finish-message" id="finishMsg">
+                🎉 ¡Enhorabuena! 🎉
+                <span style="font-size: 1.2rem; color: #475569; margin-top: 10px; font-weight: 600;">Has completado el vocabulario.</span>
+                <button class="btn-action" style="margin-top: 20px;" onclick="startGame(currentUnit)">Jugar de nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Nombres de las unidades por curso
+        const unitNames = {
+            1: [
+                "This is my life", "Welcome to our school", "What do you want to play?",
+                "What we wear", "Eat up", "Island Life", "Let's start a band!", "Around town"
+            ],
+            2: [
+                "Then and now", "Art and Design", "Fresh air", "A helping hand",
+                "Let's play", "Move It!", "Skills for life", "What a Year"
+            ],
+            3: [
+                "Teen life: a survival guide", "Where in the world?", "Make a difference", "What's the story?",
+                "Connected", "Aim High", "Brilliant!", "Unexplained"
+            ]
+        };
+
+        // Vocabulario completo
+        const vocabData = {
+            1: {
+                1: [
+                    { en: 'aunt', es: 'tía' }, { en: 'brother', es: 'hermano' }, { en: 'cousin', es: 'primo/prima' },
+                    { en: 'dad', es: 'papá' }, { en: 'daughter', es: 'hija' }, { en: 'grandad', es: 'abuelo' },
+                    { en: 'grandma', es: 'abuela' }, { en: 'husband', es: 'marido' }, { en: 'mum', es: 'mamá' },
+                    { en: 'parents', es: 'padres' }, { en: 'sister', es: 'hermana' }, { en: 'son', es: 'hijo' },
+                    { en: 'stepdad', es: 'padrastro' }, { en: 'stepmum', es: 'madrastra' }, { en: 'uncle', es: 'tío' },
+                    { en: 'wife', es: 'esposa' }, { en: 'best friend', es: 'mejor amigo' }, { en: 'neighbour', es: 'vecino' },
+                    { en: 'teammate', es: 'compañero de equipo' }, { en: 'curly', es: 'rizado' }, { en: 'long', es: 'largo' },
+                    { en: 'short', es: 'corto' }, { en: 'straight', es: 'liso' }, { en: 'blonde', es: 'rubio' },
+                    { en: 'brown', es: 'castaño / marrón' }, { en: 'dark', es: 'oscuro' }, { en: 'fair', es: 'claro' },
+                    { en: 'grey', es: 'gris' }, { en: 'red', es: 'pelirrojo / rojo' }, { en: 'white', es: 'blanco' },
+                    { en: 'blue', es: 'azul' }, { en: 'green', es: 'verde' }, { en: 'beard', es: 'barba' },
+                    { en: 'braces', es: 'aparato' }, { en: 'freckles', es: 'pecas' }, { en: 'glasses', es: 'gafas' },
+                    { en: 'moustache', es: 'bigote' }, { en: 'medium-height', es: 'estatura media' }, { en: 'slim', es: 'delgado' },
+                    { en: 'tall', es: 'alto' }, { en: 'clever', es: 'listo' }, { en: 'creative', es: 'creativo' },
+                    { en: 'friendly', es: 'amigable' }, { en: 'funny', es: 'divertido' }, { en: 'interesting', es: 'interesante' },
+                    { en: 'kind', es: 'amable' }, { en: 'animal', es: 'animal' }, { en: 'app', es: 'aplicación' },
+                    { en: 'book', es: 'libro' }, { en: 'celebrity', es: 'famoso' }, { en: 'country', es: 'país' },
+                    { en: 'film', es: 'película' }, { en: 'ice cream flavour', es: 'sabor de helado' }, { en: 'school subject', es: 'asignatura' },
+                    { en: 'singer', es: 'cantante' }, { en: 'song', es: 'canción' }, { en: 'sport', es: 'deporte' },
+                    { en: 'TV show', es: 'programa de televisión' }, { en: 'video game', es: 'videojuego' }
+                ],
+                2: [
+                    { en: 'cafeteria', es: 'cafetería' }, { en: 'classroom', es: 'clase / aula' }, { en: 'gym', es: 'gimnasio' },
+                    { en: 'hall', es: 'pasillo / vestíbulo' }, { en: 'music room', es: 'aula de música' }, { en: 'ICT room', es: 'aula de informática' },
+                    { en: 'science lab', es: 'laboratorio de ciencias' }, { en: 'library', es: 'biblioteca' }, { en: 'sports field', es: 'pista deportiva' },
+                    { en: 'do an exam', es: 'hacer un examen' }, { en: 'do exercise', es: 'hacer ejercicio' }, { en: 'do homework', es: 'hacer los deberes' },
+                    { en: 'get dressed', es: 'vestirse' }, { en: 'get home', es: 'llegar a casa' }, { en: 'get up', es: 'levantarse' },
+                    { en: 'go home', es: 'irse a casa' }, { en: 'go to bed', es: 'acostarse' }, { en: 'go to school', es: 'ir al colegio' },
+                    { en: 'have a break', es: 'tomar un descanso' }, { en: 'have a shower', es: 'ducharse' }, { en: 'have breakfast', es: 'desayunar' },
+                    { en: 'have lunch', es: 'comer' }, { en: 'have dinner', es: 'cenar' }, { en: 'tidy your bedroom', es: 'ordenar la habitación' },
+                    { en: 'wear a uniform', es: 'llevar uniforme' }, { en: 'draw pictures', es: 'hacer dibujos' }, { en: 'go shopping', es: 'ir de compras' },
+                    { en: 'go to a club', es: 'ir a un club' }, { en: 'listen to music', es: 'escuchar música' }, { en: 'make a cake', es: 'hacer una tarta' },
+                    { en: 'make videos', es: 'hacer vídeos' }, { en: 'meet friends', es: 'quedar con amigos' }, { en: 'play an instrument', es: 'tocar un instrumento' },
+                    { en: 'play video games', es: 'jugar a videojuegos' }, { en: 'read books', es: 'leer libros' }, { en: 'read your phone', es: 'mirar el móvil' },
+                    { en: 'take photos', es: 'hacer fotos' }, { en: 'watch sport', es: 'ver deportes' }, { en: 'watch films', es: 'ver películas' }
+                ],
+                3: [
+                    { en: 'boring', es: 'aburrido' }, { en: 'clean', es: 'limpio' }, { en: 'dangerous', es: 'peligroso' },
+                    { en: 'dirty', es: 'sucio' }, { en: 'easy', es: 'fácil' }, { en: 'exciting', es: 'emocionante' },
+                    { en: 'fast', es: 'rápido' }, { en: 'hard', es: 'difícil / duro' }, { en: 'heavy', es: 'pesado' },
+                    { en: 'interesting', es: 'interesante' }, { en: 'light', es: 'ligero' }, { en: 'long', es: 'largo' },
+                    { en: 'loud', es: 'ruidoso' }, { en: 'new', es: 'nuevo' }, { en: 'old', es: 'viejo' },
+                    { en: 'quiet', es: 'tranquilo' }, { en: 'safe', es: 'seguro' }, { en: 'short', es: 'corto' },
+                    { en: 'slow', es: 'lento' }, { en: 'athletics', es: 'atletismo' }, { en: 'badminton', es: 'bádminton' },
+                    { en: 'basketball', es: 'baloncesto' }, { en: 'cycling', es: 'ciclismo' }, { en: 'football', es: 'fútbol' },
+                    { en: 'golf', es: 'golf' }, { en: 'gymnastics', es: 'gimnasia' }, { en: 'hockey', es: 'hockey' },
+                    { en: 'horse-riding', es: 'equitación' }, { en: 'judo', es: 'judo' }, { en: 'rugby', es: 'rugby' },
+                    { en: 'sailing', es: 'vela' }, { en: 'surfing', es: 'surf' }, { en: 'swimming', es: 'natación' },
+                    { en: 'table tennis', es: 'tenis de mesa' }, { en: 'tennis', es: 'tenis' }, { en: 'volleyball', es: 'voleibol' },
+                    { en: 'catch', es: 'atrapar' }, { en: 'hit', es: 'golpear' }, { en: 'jump', es: 'saltar' },
+                    { en: 'kick', es: 'patear' }, { en: 'run', es: 'correr' }, { en: 'score', es: 'marcar' }, { en: 'throw', es: 'lanzar' }
+                ],
+                4: [
+                    { en: 'boots', es: 'botas' }, { en: 'cap', es: 'gorra' }, { en: 'hat', es: 'sombrero' },
+                    { en: 'hoodie', es: 'sudadera con capucha' }, { en: 'jacket', es: 'chaqueta' }, { en: 'joggers', es: 'pantalones de chándal' },
+                    { en: 'scarf', es: 'bufanda' }, { en: 'skirt', es: 'falda' }, { en: 'shirt', es: 'camisa' },
+                    { en: 'shorts', es: 'pantalones cortos' }, { en: 'top', es: 'top' }, { en: 'trousers', es: 'pantalones' },
+                    { en: 'coat', es: 'abrigo' }, { en: 'jeans', es: 'vaqueros' }, { en: 'shoes', es: 'zapatos' },
+                    { en: 'T-shirt', es: 'camiseta' }, { en: 'dress', es: 'vestido' }, { en: 'jumper', es: 'jersey' },
+                    { en: 'socks', es: 'calcetines' }, { en: 'tracksuit', es: 'chándal' }, { en: 'glasses', es: 'gafas' },
+                    { en: 'leggings', es: 'mallas' }, { en: 'sunglasses', es: 'gafas de sol' }, { en: 'trainers', es: 'zapatillas' },
+                    { en: 'active', es: 'activo' }, { en: 'friendly', es: 'amigable' }, { en: 'sad', es: 'triste' },
+                    { en: 'angry', es: 'enfadado' }, { en: 'happy', es: 'feliz' }, { en: 'unfriendly', es: 'antipático' },
+                    { en: 'confident', es: 'seguro de sí mismo' }, { en: 'lucky', es: 'afortunado' }, { en: 'creative', es: 'creativo' },
+                    { en: 'relaxed', es: 'relajado' }, { en: 'baggy', es: 'holgado' }, { en: 'casual', es: 'informal' },
+                    { en: 'new', es: 'nuevo' }, { en: 'patterned', es: 'estampado' }, { en: 'smart', es: 'elegante' },
+                    { en: 'plain', es: 'liso' }, { en: 'tight', es: 'ajustado' }, { en: 'second-hand', es: 'de segunda mano' }
+                ],
+                5: [
+                    { en: 'bananas', es: 'plátanos' }, { en: 'beef', es: 'ternera' }, { en: 'bread', es: 'pan' },
+                    { en: 'carrots', es: 'zanahorias' }, { en: 'cereal', es: 'cereales' }, { en: 'cheese', es: 'queso' },
+                    { en: 'chicken', es: 'pollo' }, { en: 'chips', es: 'patatas fritas' }, { en: 'coffee', es: 'café' },
+                    { en: 'eggs', es: 'huevos' }, { en: 'grapes', es: 'uvas' }, { en: 'ice cream', es: 'helado' },
+                    { en: 'juice', es: 'zumo' }, { en: 'lemonade', es: 'limonada' }, { en: 'lettuce', es: 'lechuga' },
+                    { en: 'milk', es: 'leche' }, { en: 'oranges', es: 'naranjas' }, { en: 'pasta', es: 'pasta' },
+                    { en: 'rice', es: 'arroz' }, { en: 'salmon', es: 'salmón' }, { en: 'salt', es: 'sal' },
+                    { en: 'sugar', es: 'azúcar' }, { en: 'tomatoes', es: 'tomates' }, { en: 'yoghurt', es: 'yogur' },
+                    { en: 'bitter', es: 'amargo' }, { en: 'crunchy', es: 'crujiente' }, { en: 'delicious', es: 'delicioso' },
+                    { en: 'greasy', es: 'grasiento' }, { en: 'healthy', es: 'sano' }, { en: 'salty', es: 'salado' },
+                    { en: 'savoury', es: 'salado / no dulce' }, { en: 'spicy', es: 'picante' }, { en: 'sweet', es: 'dulce' },
+                    { en: 'unhealthy', es: 'malsano / no sano' }, { en: 'desserts', es: 'postres' }, { en: 'drinks', es: 'bebidas' },
+                    { en: 'main dishes', es: 'platos principales' }, { en: 'sides', es: 'guarniciones' }
+                ],
+                6: [
+                    { en: 'beach', es: 'playa' }, { en: 'cave', es: 'cueva' }, { en: 'coast', es: 'costa' },
+                    { en: 'desert', es: 'desierto' }, { en: 'jungle', es: 'selva' }, { en: 'mountain', es: 'montaña' },
+                    { en: 'ocean', es: 'océano' }, { en: 'river', es: 'río' }, { en: 'volcano', es: 'volcán' },
+                    { en: 'waterfall', es: 'cascada' }, { en: 'cloudy', es: 'nublado' }, { en: 'cold', es: 'frío' },
+                    { en: 'dry', es: 'seco' }, { en: 'foggy', es: 'con niebla' }, { en: 'hot', es: 'caluroso' },
+                    { en: 'icy', es: 'helado' }, { en: 'rainy', es: 'lluvioso' }, { en: 'snowy', es: 'nevado' },
+                    { en: 'stormy', es: 'tormentoso' }, { en: 'sunny', es: 'soleado' }, { en: 'warm', es: 'cálido' },
+                    { en: 'wet', es: 'mojado' }, { en: 'windy', es: 'ventoso' }, { en: 'ant', es: 'hormiga' },
+                    { en: 'bee', es: 'abeja' }, { en: 'chameleon', es: 'camaleón' }, { en: 'dolphin', es: 'delfín' },
+                    { en: 'duck', es: 'pato' }, { en: 'snake', es: 'serpiente' }, { en: 'whale', es: 'ballena' }
+                ],
+                7: [
+                    { en: 'bass guitar', es: 'bajo eléctrico' }, { en: 'bass guitarist', es: 'bajista' }, { en: 'dancer', es: 'bailarín' },
+                    { en: 'DJs', es: 'DJ' }, { en: 'drummer', es: 'batería (persona)' }, { en: 'drums', es: 'batería (instrumento)' },
+                    { en: 'guitar', es: 'guitarra' }, { en: 'keyboard', es: 'teclado' }, { en: 'lead singer', es: 'cantante principal' },
+                    { en: 'roadie', es: 'técnico de gira' }, { en: 'saxophone', es: 'saxofón' }, { en: 'trumpet', es: 'trompeta' },
+                    { en: 'violin', es: 'violín' }, { en: 'be born', es: 'nacer' }, { en: 'buy a house', es: 'comprar una casa' },
+                    { en: 'get a job', es: 'conseguir un trabajo' }, { en: 'get married', es: 'casarse' }, { en: 'go to school', es: 'ir al colegio' },
+                    { en: 'go to university', es: 'ir a la universidad' }, { en: 'grow up', es: 'crecer' }, { en: 'learn to drive', es: 'aprender a conducir' },
+                    { en: 'leave school', es: 'dejar el colegio' }, { en: 'take exams', es: 'hacer exámenes' }, { en: 'contestant', es: 'concursante' },
+                    { en: 'the favourite', es: 'el favorito' }, { en: 'final', es: 'final' }, { en: 'judge', es: 'juez' },
+                    { en: 'round', es: 'ronda' }, { en: 'stage', es: 'escenario' }, { en: 'give a concert', es: 'dar un concierto' },
+                    { en: 'go on tour', es: 'ir de gira' }, { en: 'have a hit', es: 'tener un éxito' }, { en: 'make a video', es: 'hacer un vídeo' },
+                    { en: 'release a new song', es: 'lanzar una canción' }, { en: 'win an award', es: 'ganar un premio' }
+                ],
+                8: [
+                    { en: 'bus stop', es: 'parada de autobús' }, { en: 'café', es: 'cafetería' }, { en: 'cinema', es: 'cine' },
+                    { en: 'library', es: 'biblioteca' }, { en: 'restaurant', es: 'restaurante' }, { en: 'sports centre', es: 'polideportivo' },
+                    { en: 'underground station', es: 'estación de metro' }, { en: 'market', es: 'mercado' }, { en: 'museum', es: 'museo' },
+                    { en: 'park', es: 'parque' }, { en: 'police station', es: 'comisaría' }, { en: 'stadium', es: 'estadio' },
+                    { en: 'statue', es: 'estatua' }, { en: 'theatre', es: 'teatro' }, { en: 'theme park', es: 'parque de atracciones' },
+                    { en: 'square', es: 'plaza' }, { en: 'train station', es: 'estación de tren' }, { en: 'attractive', es: 'atractivo' },
+                    { en: 'boring', es: 'aburrido' }, { en: 'clean', es: 'limpio' }, { en: 'crowded', es: 'abarrotado' },
+                    { en: 'historic', es: 'histórico' },
+                    { en: 'modern', es: 'moderno' }, { en: 'quiet', es: 'tranquilo' }, { en: 'ugly', es: 'feo' }
+                ]
+            },
+            3: {
+                1: [
+                    { en: 'clean the bathroom', es: 'limpiar el baño' }, { en: 'clean the windows', es: 'limpiar las ventanas' }, { en: 'do the ironing', es: 'planchar' },
+                    { en: 'do the laundry', es: 'hacer la colada' }, { en: 'load / unload the dishwasher', es: 'poner / vaciar el lavavajillas' }, { en: 'make my own breakfast', es: 'hacerme el desayuno' },
+                    { en: 'make the bed', es: 'hacer la cama' }, { en: 'prepare food', es: 'preparar la comida' }, { en: 'shop the food', es: 'hacer la compra' },
+                    { en: 'take the rubbish out', es: 'sacar la basura' }, { en: 'tidy my room', es: 'ordenar mi habitación' }, { en: 'vacuum the floor', es: 'pasar la aspiradora' },
+                    { en: 'wash up', es: 'fregar los platos' }, { en: 'athletics', es: 'atletismo' }, { en: 'bowling', es: 'bolos' },
+                    { en: 'chess', es: 'ajedrez' }, { en: 'climbing', es: 'escalada' }, { en: 'fitness training', es: 'entrenamiento físico' },
+                    { en: 'gymnastics', es: 'gimnasia' }, { en: 'handball', es: 'balonmano' }, { en: 'hiking', es: 'senderismo' },
+                    { en: 'hockey', es: 'hockey' }, { en: 'judo', es: 'judo' }, { en: 'karate', es: 'kárate' },
+                    { en: 'surfing', es: 'surf' }, { en: 'cheerful', es: 'alegre' }, { en: 'confident', es: 'seguro de sí mismo' },
+                    { en: 'funny', es: 'divertido' }, { en: 'generous', es: 'generoso' }, { en: 'helpful', es: 'servicial' },
+                    { en: 'honest', es: 'honesto' }, { en: 'interesting', es: 'interesante' }, { en: 'kind', es: 'amable' }, { en: 'loyal', es: 'leal' }
+                ],
+                2: [
+                    { en: 'ancient site', es: 'sitio antiguo / ruinas' }, { en: 'aquarium', es: 'acuario' }, { en: 'art gallery', es: 'galería de arte' },
+                    { en: 'botanical gardens', es: 'jardín botánico' }, { en: 'castle', es: 'castillo' }, { en: 'cathedral', es: 'catedral' },
+                    { en: 'celebration', es: 'celebración' }, { en: 'festival', es: 'festival' }, { en: 'market', es: 'mercado' },
+                    { en: 'monument', es: 'monumento' }, { en: 'museum', es: 'museo' }, { en: 'national park', es: 'parque nacional' },
+                    { en: 'natural wonder', es: 'maravilla natural' }, { en: 'palace', es: 'palacio' }, { en: 'parade', es: 'desfile' },
+                    { en: 'shopping district', es: 'zona comercial' }, { en: 'temple', es: 'templo' }, { en: 'theme park', es: 'parque de atracciones' },
+                    { en: 'tower', es: 'torre' }, { en: 'wildlife reserve', es: 'reserva natural' }, { en: 'bungee-jumping', es: 'puenting' },
+                    { en: 'canyoning', es: 'barranquismo' }, { en: 'horse-riding', es: 'equitación' }, { en: 'kayaking', es: 'kayak' },
+                    { en: 'mountain biking', es: 'ciclismo de montaña' }, { en: 'paddleboarding', es: 'paddle surf' }, { en: 'parascending', es: 'paracaidismo acuático' },
+                    { en: 'scuba diving', es: 'submarinismo' }, { en: 'sightseeing', es: 'turismo' }, { en: 'trekking', es: 'senderismo' },
+                    { en: 'waterskiing', es: 'esquí acuático' }, { en: 'white-water rafting', es: 'rafting' }, { en: 'ziplining', es: 'tirolina' },
+                    { en: 'active', es: 'activo' }, { en: 'challenging', es: 'desafiante' }, { en: 'dangerous', es: 'peligroso' },
+                    { en: 'dull', es: 'aburrido / soso' }, { en: 'expensive', es: 'caro' }, { en: 'relaxing', es: 'relajante' },
+                    { en: 'scary', es: 'de miedo' }, { en: 'slow', es: 'lento' }, { en: 'thrilling', es: 'emocionante' }, { en: 'tiring', es: 'agotador' }
+                ],
+                3: [
+                    { en: 'carbon footprint', es: 'huella de carbono' }, { en: 'climate change', es: 'cambio climático' }, { en: 'electric cars', es: 'coches eléctricos' },
+                    { en: 'endangered animals', es: 'animales en peligro de extinción' }, { en: 'fossil fuels', es: 'combustibles fósiles' }, { en: 'greenhouse gases', es: 'gases de efecto invernadero' },
+                    { en: 'household rubbish', es: 'basura doméstica' }, { en: 'plastic packaging', es: 'envases de plástico' }, { en: 'recycling bins', es: 'contenedores de reciclaje' },
+                    { en: 'solar energy', es: 'energía solar' }, { en: 'animal rights', es: 'derechos de los animales' }, { en: 'gender equality', es: 'igualdad de género' },
+                    { en: 'homelessness', es: 'falta de vivienda' }, { en: 'pandemic', es: 'pandemia' }, { en: 'pollution', es: 'contaminación' },
+                    { en: 'poverty', es: 'pobreza' }, { en: 'racism', es: 'racismo' }, { en: 'accountant', es: 'contable' },
+                    { en: 'architect', es: 'arquitecto' }, { en: 'builder', es: 'albañil / constructor' }, { en: 'carpenter', es: 'carpintero' },
+                    { en: 'chef', es: 'chef / cocinero' }, { en: 'childminder', es: 'niñera' }, { en: 'dentist', es: 'dentista' },
+                    { en: 'journalist', es: 'periodista' }, { en: 'lawyer', es: 'abogado' }, { en: 'optician', es: 'óptico' },
+                    { en: 'pharmacist', es: 'farmacéutico' }, { en: 'pilot', es: 'piloto' }, { en: 'plumber', es: 'fontanero' },
+                    { en: 'surgeon', es: 'cirujano' }, { en: 'vet', es: 'veterinario' }
+                ],
+                4: [
+                    { en: 'Academy award', es: 'premio de la academia / óscar' }, { en: 'audience', es: 'público / audiencia' }, { en: 'be based on', es: 'estar basado en' },
+                    { en: 'character', es: 'personaje' }, { en: 'critic', es: 'crítico' }, { en: 'performance', es: 'actuación' },
+                    { en: 'play the part', es: 'interpretar el papel' }, { en: 'plot', es: 'argumento / trama' }, { en: 'series', es: 'serie' },
+                    { en: 'be set in', es: 'estar ambientado en' }, { en: 'special effects', es: 'efectos especiales' }, { en: 'star', es: 'protagonizar' },
+                    { en: 'angry / furious', es: 'enfadado / furioso' }, { en: 'big / huge', es: 'grande / enorme' }, { en: 'cold / freezing', es: 'frío / helado' },
+                    { en: 'frightened / terrified', es: 'asustado / aterrorizado' }, { en: 'funny / hilarious', es: 'divertido / graciosísimo' }, { en: 'hungry / starving', es: 'hambriento / muerto de hambre' },
+                    { en: 'interesting / fascinating', es: 'interesante / fascinante' }, { en: 'old / ancient', es: 'viejo / antiguo' }, { en: 'scary / terrifying', es: 'aterrador / terrorífico' },
+                    { en: 'small / tiny', es: 'pequeño / diminuto' }, { en: 'tired / exhausted', es: 'cansado / exhausto' }, { en: 'action film', es: 'película de acción' },
+                    { en: 'animation', es: 'película de animación' }, { en: 'comedy', es: 'comedia' }, { en: 'fantasy film', es: 'película de fantasía' },
+                    { en: 'historical drama', es: 'drama histórico' }, { en: 'horror film', es: 'película de terror' }, { en: 'musical', es: 'musical' },
+                    { en: 'romance', es: 'película romántica' }, { en: 'science fiction film', es: 'película de ciencia ficción' }, { en: 'thriller', es: 'película de suspense' },
+                    { en: 'war film', es: 'película bélica' }, { en: 'western', es: 'película del oeste / wéstern' }
+                ],
+                5: [
+                    { en: 'smartphone', es: 'teléfono inteligente / móvil' }, { en: 'wireless headphones', es: 'auriculares inalámbricos' }, { en: 'earbuds', es: 'auriculares de botón' },
+                    { en: 'games console', es: 'consola de videojuegos' }, { en: 'laptop', es: 'portátil' }, { en: 'fitness tracker', es: 'pulsera de actividad' },
+                    { en: 'bluetooth speakers', es: 'altavoces bluetooth' }, { en: 'add someone to a group chat', es: 'añadir a alguien a un grupo' }, { en: 'add someone to your contacts', es: 'añadir a alguien a contactos' },
+                    { en: 'get directions', es: 'obtener indicaciones' }, { en: 'get notifications', es: 'recibir notificaciones' }, { en: 'go on social media', es: 'entrar en redes sociales' },
+                    { en: 'go online', es: 'conectarse a internet' }, { en: 'make a call / video call', es: 'hacer una llamada / videollamada' }, { en: 'make a payment', es: 'hacer un pago' },
+                    { en: 'stream a video', es: 'ver un vídeo en streaming' }, { en: 'stream music', es: 'escuchar música en streaming' }, { en: 'track your fitness', es: 'registrar tu actividad física' },
+                    { en: 'track your location', es: 'rastrear tu ubicación' }, { en: 'commercial success', es: 'éxito comercial' }, { en: 'develop', es: 'desarrollar' },
+                    { en: 'grow', es: 'crecer' }, { en: 'invest', es: 'invertir' }, { en: 'marketing', es: 'marketing' },
+                    { en: 'product', es: 'producto' }, { en: 'promote', es: 'promocionar' }, { en: 'range', es: 'gama / variedad' },
+                    { en: 'sales', es: 'ventas' }, { en: 'set up', es: 'montar / establecer' }, { en: 'educational', es: 'educativa' },
+                    { en: 'fitness', es: 'de ejercicio' }, { en: 'gaming', es: 'de juegos' }, { en: 'messaging', es: 'de mensajería' },
+                    { en: 'music streaming', es: 'de música en streaming' }, { en: 'navigation', es: 'de navegación' }, { en: 'photo sharing', es: 'de compartir fotos' },
+                    { en: 'reminder', es: 'de recordatorios' }, { en: 'shopping', es: 'de compras' }, { en: 'video streaming', es: 'de vídeo en streaming' }
+                ],
+                6: [
+                    { en: 'find / lose some money', es: 'encontrar / perder dinero' }, { en: 'mend / break your phone', es: 'arreglar / romper el móvil' }, { en: 'pass / fail an exam', es: 'aprobar / suspender un examen' },
+                    { en: 'prevent / cause an argument', es: 'evitar / provocar una discusión' }, { en: 'remember / forget a birthday', es: 'recordar / olvidar un cumpleaños' }, { en: 'score / miss a penalty', es: 'marcar / fallar un penalti' },
+                    { en: 'change career', es: 'cambiar de profesión' }, { en: 'get a job', es: 'conseguir trabajo' }, { en: 'get a promotion', es: 'conseguir un ascenso' },
+                    { en: 'get divorced', es: 'divorciarse' }, { en: 'get married', es: 'casarse' }, { en: 'get your big break', es: 'tener tu gran oportunidad' },
+                    { en: 'go to university', es: 'ir a la universidad' }, { en: 'graduate', es: 'graduarse' }, { en: 'have a serious accident / illness', es: 'tener un accidente grave / enfermedad' },
+                    { en: 'make your debut', es: 'debutar' }, { en: 'meet your partner', es: 'conocer a tu pareja' }, { en: 'move', es: 'mudarse' },
+                    { en: 'retire', es: 'jubilarse' }, { en: 'start a family', es: 'formar una familia' }, { en: 'creativity', es: 'creatividad' },
+                    { en: 'experience', es: 'experiencia' }, { en: 'fitness', es: 'forma física' }, { en: 'intelligence', es: 'inteligencia' },
+                    { en: 'motivation', es: 'motivación' }, { en: 'patience', es: 'paciencia' }, { en: 'speed', es: 'velocidad' },
+                    { en: 'strength', es: 'fuerza' }, { en: 'talent', es: 'talento' }
+                ],
+                7: [
+                    { en: 'attach', es: 'adjuntar' }, { en: 'attachment', es: 'archivo adjunto' }, { en: 'attract', es: 'atraer' },
+                    { en: 'attraction', es: 'atracción' }, { en: 'combine', es: 'combinar' }, { en: 'combination', es: 'combinación' },
+                    { en: 'contain', es: 'contener' }, { en: 'container', es: 'recipiente' }, { en: 'create', es: 'crear' },
+                    { en: 'creation', es: 'creación' }, { en: 'design', es: 'diseñar / diseño' }, { en: 'develop', es: 'desarrollar' },
+                    { en: 'development', es: 'desarrollo' }, { en: 'inspire', es: 'inspirar' }, { en: 'inspiration', es: 'inspiración' },
+                    { en: 'intend', es: 'tener la intención' }, { en: 'intention', es: 'intención' }, { en: 'invent', es: 'inventar' },
+                    { en: 'invention', es: 'invento' }, { en: 'power', es: 'alimentar / dar energía / poder' }, { en: 'proof', es: 'prueba / demostración' },
+                    { en: 'prove', es: 'demostrar' }, { en: 'chorus', es: 'estribillo' }, { en: 'duet', es: 'dúo' },
+                    { en: 'lyrics', es: 'letra de canción' }, { en: 'melody', es: 'melodía' }, { en: 'rhythm', es: 'ritmo' },
+                    { en: 'single', es: 'sencillo / single' }, { en: 'songwriter', es: 'compositor' }, { en: 'vocalist', es: 'vocalista' }
+                ],
+                8: [
+                    { en: 'analyse', es: 'analizar' }, { en: 'belief', es: 'creencia' }, { en: 'claim', es: 'afirmar / reclamar' },
+                    { en: 'clues', es: 'pistas' }, { en: 'confirm', es: 'confirmar' }, { en: 'creature', es: 'criatura' },
+                    { en: 'encounter', es: 'encuentro' }, { en: 'evidence', es: 'prueba / evidencia' }, { en: 'explanation', es: 'explicación' },
+                    { en: 'footprints', es: 'huellas' }, { en: 'investigate', es: 'investigar' }, { en: 'prove', es: 'demostrar' },
+                    { en: 'theory', es: 'teoría' }, { en: 'trick', es: 'truco' }, { en: 'witness', es: 'testigo' },
+                    { en: 'active', es: 'activo' }, { en: 'complex', es: 'complejo' }, { en: 'experienced', es: 'experimentado' },
+                    { en: 'fascinating', es: 'fascinante' }, { en: 'financial', es: 'financiero' }, { en: 'illegal', es: 'ilegal' },
+                    { en: 'official', es: 'oficial' }, { en: 'private', es: 'privado' }, { en: 'reliable', es: 'fiable' },
+                    { en: 'remote', es: 'remoto' }, { en: 'suitable', es: 'adecuado' }, { en: 'valuable', es: 'valioso' },
+                    { en: 'various', es: 'varios' }, { en: 'worldwide', es: 'mundial' }, { en: 'call off', es: 'cancelar' },
+                    { en: 'carry out', es: 'llevar a cabo' }, { en: 'give away', es: 'regalar / revelar' }, { en: 'give up', es: 'rendirse / dejar de hacer' },
+                    { en: 'make up', es: 'inventar / hacer las paces' }, { en: 'set up', es: 'montar / configurar' }, { en: 'take up', es: 'empezar una afición' },
+                    { en: 'this photo shows...', es: 'esta foto muestra...' }, { en: 'this is a photo of ...', es: 'esta es una foto de...' }, { en: 'in this picture, you can see ...', es: 'en esta imagen puedes ver...' },
+                    { en: 'in the foreground, ...', es: 'en primer plano...' }, { en: 'in the background, ...', es: 'en el fondo...' }, { en: 'on the left / right, ...', es: 'a la izquierda / derecha...' },
+                    { en: 'there’s some sort of...', es: 'hay una especie de...' }, { en: 'there’s a ... of some kind', es: 'hay un... de algún tipo' }, { en: 'there’s what looks like a...', es: 'hay lo que parece ser un...' },
+                    { en: 'there’s something that could be a...', es: 'hay algo que podría ser un...' }, { en: 'I might ...', es: 'puede que yo...' }, { en: 'I expect I’ll ...', es: 'espero que yo...' },
+                    { en: 'I don’t expect I’ll ...', es: 'no espero que yo...' }, { en: 'I’ll probably ...', es: 'probablemente yo...' }, { en: 'I’m pretty sure I’ll ...', es: 'estoy bastante seguro de que yo...' },
+                    { en: 'I may ...', es: 'podría... / puede que yo...' }, { en: 'it’s unlikely I’ll ...', es: 'es poco probable que yo...' }, { en: 'I don’t reckon I’ll ...', es: 'no creo que yo...' },
+                    { en: 'the chances are I’ll ...', es: 'lo más probable es que yo...' }, { en: 'I doubt I’ll ...', es: 'dudo que yo...' }
+                ]
+            }
+        };
+
+        let track = document.getElementById('track');
+        let slider = document.getElementById('speedSlider');
+        let finishMsg = document.getElementById('finishMsg');
+        
+        let activeCards = [];
+        let isPaused = false;
+        let animationId;
+        let activeCard = null;
+        let currentUnit = 1;
+        let currentYear = 1;
+
+        const CARD_TOTAL_WIDTH = 250;
+        const CONTAINER_WIDTH = 1000;
+
+        function selectCourse(year) {
+            currentYear = year;
+            
+            // Cambiar clase temática en el body para adaptar los colores globales
+            document.body.className = `theme-y${year}`;
+            
+            // Actualizar título de la pantalla
+            document.getElementById('unitsTitle').innerText = `Units for Year ${year}`;
+            
+            // Generar botones de unidad dinámicamente
+            let grid = document.getElementById('unitsGrid');
+            grid.innerHTML = '';
+            
+            let units = unitNames[year];
+            units.forEach((name, index) => {
+                let unitNum = index + 1;
+                let btn = document.createElement('div');
+                btn.className = 'unit-btn';
+                btn.innerHTML = `<h2>Unit ${unitNum}</h2><p>${name}</p>`;
+                btn.onclick = () => startGame(unitNum);
+                grid.appendChild(btn);
+            });
+            
+            navigate('screenUnits');
+        }
+
+        function navigate(targetId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(targetId).classList.remove('hidden');
+            if(targetId !== 'screenGame') {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function startGame(unit) {
+            currentUnit = unit;
+            navigate('screenGame');
+            finishMsg.style.display = 'none';
+            track.style.display = 'block';
+            track.innerHTML = '';
+            activeCards = [];
+            isPaused = false;
+            activeCard = null;
+            slider.value = 1.5;
+
+            // Seleccionamos las palabras de la unidad y barajamos
+            let words = vocabData[currentYear][currentUnit] || [];
+            let shuffled = [...words].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach((word, index) => {
+                let cardObj = createCard(word);
+                cardObj.x = index * CARD_TOTAL_WIDTH;
+                cardObj.el.style.transform = `translateX(${cardObj.x}px)`;
+                track.appendChild(cardObj.el);
+                activeCards.push(cardObj);
+            });
+
+            cancelAnimationFrame(animationId);
+            gameLoop();
+        }
+
+        function createCard(wordData) {
+            let cardElement = document.createElement('div');
+            cardElement.className = 'flashcard';
+            cardElement.innerHTML = `
+                <div class="flashcard-inner">
+                    <div class="card-face card-front">
+                        <span class="word-en">${wordData.en}</span>
+                    </div>
+                    <div class="card-face card-back">
+                        <span class="word-es">${wordData.es}</span>
+                        <button class="btn-remove">Got it! ✔️</button>
+                    </div>
+                </div>
+            `;
+
+            let cardObj = {
+                el: cardElement,
+                x: 0
+            };
+
+            cardElement.addEventListener('click', (e) => {
+                if (cardElement.classList.contains('removing')) return;
+
+                if (e.target.classList.contains('btn-remove')) {
+                    removeCard(cardObj);
+                    return;
+                }
+
+                if (cardElement.classList.contains('is-flipped')) {
+                    cardElement.classList.remove('is-flipped');
+                    isPaused = false;
+                    activeCard = null;
+                } else {
+                    if (activeCard) activeCard.el.classList.remove('is-flipped');
+                    cardElement.classList.add('is-flipped');
+                    isPaused = true;
+                    activeCard = cardObj;
+                }
+            });
+
+            return cardObj;
+        }
+
+        function removeCard(cardObj) {
+            let domElement = cardObj.el;
+            domElement.classList.add('removing');
+            domElement.style.transform = `translateX(${cardObj.x}px) scale(0) translateY(-50px)`;
+            domElement.style.pointerEvents = 'none'; 
+            
+            activeCards = activeCards.filter(c => c !== cardObj);
+
+            setTimeout(() => {
+                domElement.remove(); 
+                
+                isPaused = false;
+                activeCard = null;
+                
+                if (activeCards.length === 0) {
+                    track.style.display = 'none';
+                    finishMsg.style.display = 'flex';
+                    cancelAnimationFrame(animationId);
+                }
+            }, 300);
+        }
+
+        function gameLoop() {
+            if (!isPaused && activeCards.length > 0) {
+                let speed = parseFloat(slider.value);
+
+                for (let i = 0; i < activeCards.length; i++) {
+                    let card = activeCards[i];
+                    card.x -= speed;
+
+                    if (card.x <= -CARD_TOTAL_WIDTH) {
+                        let maxX = -9999;
+                        for (let j = 0; j < activeCards.length; j++) {
+                            if (activeCards[j].x > maxX) maxX = activeCards[j].x;
+                        }
+                        card.x = Math.max(maxX + CARD_TOTAL_WIDTH, CONTAINER_WIDTH);
+                    }
+                    
+                    card.el.style.transform = `translateX(${card.x}px)`;
+                }
+            }
+            animationId = requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+</html>
