@@ -28,24 +28,32 @@
             --unit-bg: #e0f2fe;
             --unit-text: #0369a1;
             --unit-hover: #bae6fd;
+            --theme-color: var(--year1);
+            --theme-color-dark: #0284c7;
         }
 
         .theme-y2 {
             --unit-bg: #fdeaea;
             --unit-text: #9f1239;
             --unit-hover: #fce0e0;
+            --theme-color: var(--year2);
+            --theme-color-dark: #be123c;
         }
 
         .theme-y3 {
             --unit-bg: #fef9c3;
             --unit-text: #854d0e;
             --unit-hover: #fef08a;
+            --theme-color: var(--year3);
+            --theme-color-dark: #a16207;
         }
 
         .theme-y4 {
             --unit-bg: #f3e8ff;
             --unit-text: #7e22ce;
             --unit-hover: #e9d5ff;
+            --theme-color: var(--year4);
+            --theme-color-dark: #6b21a8;
         }
 
         * {
@@ -78,6 +86,7 @@
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.4s ease-out;
+            flex-grow: 1; /* Permite que la pantalla ocupe toda la altura para centrar el carrusel */
         }
 
         @keyframes fadeIn {
@@ -258,12 +267,12 @@
             background-color: #1e293b;
         }
 
-        /* Carrusel Container */
+        /* Carrusel Container reescrito para no dar saltos */
         .carousel-wrapper {
             width: 100%;
             max-width: 1000px;
             height: 380px;
-            margin: 0 auto;
+            margin: auto auto; /* Centra el carrusel horizontal y verticalmente */
             overflow: hidden;
             position: relative;
             mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
@@ -327,7 +336,7 @@
         .card-front {
             background-color: var(--card-front);
             color: var(--text-dark);
-            border: 6px solid var(--card-back);
+            border: 6px solid var(--theme-color, var(--year1));
         }
 
         .word-en {
@@ -337,10 +346,10 @@
         }
 
         .card-back {
-            background-color: var(--card-back);
+            background-color: var(--theme-color, var(--year1));
             color: white;
             transform: rotateY(180deg);
-            border: 6px solid #059669;
+            border: 6px solid var(--theme-color-dark, #0284c7);
         }
 
         .word-es {
@@ -352,7 +361,7 @@
 
         .btn-remove {
             background-color: white;
-            color: #10b981;
+            color: var(--theme-color, var(--year1));
             border: none;
             padding: 14px 24px; /* Mayor zona de toque para móviles */
             border-radius: 30px;
@@ -365,20 +374,29 @@
 
         .btn-remove:hover {
             transform: scale(1.1);
-            background-color: #f0fdf4;
+            background-color: #f1f5f9;
         }
 
         .finish-message {
             text-align: center;
             font-size: 2rem;
             font-weight: 800;
-            color: #10b981;
+            color: var(--theme-color, var(--year1));
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 300px;
             width: 100%;
+        }
+
+        .disclaimer {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+            padding: 20px;
+            width: 100%;
+            margin-top: auto;
         }
 
         /* ----- MEDIA QUERIES RESPONSIVE PARA MÓVILES Y TABLETS ----- */
@@ -391,19 +409,39 @@
         @media (max-width: 768px) {
             h1 { font-size: 2.2rem; }
             .grid-courses { grid-template-columns: 1fr; }
+            .screen { padding: 20px 10px; }
             
-            /* Apilar controles de la partida en vertical en móviles */
+            /* Mantener controles en una línea y solo iconos en móviles */
             .game-header {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px;
+                flex-direction: row;
+                gap: 10px;
+                padding: 10px;
+                margin-bottom: auto;
             }
             .machinery-controls {
+                width: auto;
+                flex-grow: 1;
+                justify-content: center;
+                padding: 8px 10px;
+            }
+            .machinery-controls label .btn-text {
+                display: none;
+            }
+            input[type=range] {
                 width: 100%;
-                justify-content: space-between;
             }
             .btn-action {
-                width: 100%;
+                width: 48px;
+                height: 48px;
+                padding: 0;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+            .btn-text {
+                display: none;
+            }
+            .carousel-wrapper {
+                height: 330px;
             }
         }
 
@@ -451,20 +489,20 @@
         <div class="game-header">
             <button class="btn-action" onclick="navigate('screenUnits')">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Exit
+                <span class="btn-text">Exit</span>
             </button>
             
             <div class="machinery-controls">
                 <label for="speedSlider">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    Speed
+                    <span class="btn-text">Speed</span>
                 </label>
                 <input type="range" id="speedSlider" min="0.5" max="6" step="0.1" value="1.5">
             </div>
 
             <button class="btn-action" onclick="startGame(currentUnit)">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                Reset
+                <span class="btn-text">Reset</span>
             </button>
         </div>
 
@@ -477,6 +515,10 @@
             </div>
         </div>
     </div>
+
+    <footer class="disclaimer">
+        Aplicación creada con Gemini por Eduardo Ruiz (@ejruizgarcia), 2026. Licencia Creative Commons (BY-NC-ND, no comercial, usar como está).
+    </footer>
 
     <script>
         // Nombres de las unidades por curso
@@ -1030,8 +1072,7 @@
             activeCards = [];
             isPaused = false;
             activeCard = null;
-            slider.value = 1.5;
-
+            
             // Seleccionamos las palabras de la unidad y barajamos
             let words = vocabData[currentYear][currentUnit] || [];
             let shuffled = [...words].sort(() => Math.random() - 0.5);
