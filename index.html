@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VocabApp - ESO</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -14,7 +14,7 @@
             --year3: #eab308;
             --year4: #8b5cf6;
             
-            /* Temas por defecto para Unidades (cambian según el curso) */
+            /* Temas por defecto para Unidades */
             --unit-bg: #fdeaea;
             --unit-text: #9f1239;
             --unit-hover: #fce0e0;
@@ -42,12 +42,19 @@
             --unit-hover: #fef08a;
         }
 
+        .theme-y4 {
+            --unit-bg: #f3e8ff;
+            --unit-text: #7e22ce;
+            --unit-hover: #e9d5ff;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -67,7 +74,7 @@
         .screen {
             width: 100%;
             max-width: 1100px;
-            padding: 50px 20px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.4s ease-out;
@@ -88,7 +95,7 @@
         p.subtitle {
             font-size: 1.2rem;
             color: #475569;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         /* Pantalla 1: Cursos */
@@ -101,7 +108,7 @@
         .course-btn {
             border: none;
             border-radius: 12px;
-            padding: 40px 20px;
+            padding: 30px 20px;
             font-size: 2rem;
             font-weight: 800;
             color: white;
@@ -114,7 +121,7 @@
         .course-btn span {
             display: block;
             font-size: 1.1rem;
-            font-weight: 400;
+            font-weight: 600;
             margin-top: 5px;
             opacity: 0.9;
         }
@@ -133,14 +140,14 @@
         .grid-units {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            gap: 15px;
         }
 
         .unit-btn {
             background-color: var(--unit-bg);
             border: none;
             border-radius: 12px;
-            padding: 30px 20px;
+            padding: 25px 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
@@ -149,14 +156,14 @@
 
         .unit-btn h2 {
             color: var(--unit-text);
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 800;
             margin-bottom: 5px;
         }
 
         .unit-btn p {
             color: var(--unit-text);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
         }
 
@@ -201,7 +208,7 @@
 
         input[type=range] {
             -webkit-appearance: none;
-            width: 180px;
+            width: 150px;
             background: transparent;
         }
 
@@ -217,14 +224,10 @@
             border: 2px solid white;
         }
 
-        /* Varía el color del mando según el año para integrarlo más (opcional pero queda bien) */
-        .theme-y1 input[type=range]::-webkit-slider-thumb {
-            background: linear-gradient(to bottom, #0ea5e9, #0369a1);
-        }
-
-        .theme-y3 input[type=range]::-webkit-slider-thumb {
-            background: linear-gradient(to bottom, #eab308, #a16207);
-        }
+        /* Varía el color del mando según el año */
+        .theme-y1 input[type=range]::-webkit-slider-thumb { background: linear-gradient(to bottom, #0ea5e9, #0369a1); }
+        .theme-y3 input[type=range]::-webkit-slider-thumb { background: linear-gradient(to bottom, #eab308, #a16207); }
+        .theme-y4 input[type=range]::-webkit-slider-thumb { background: linear-gradient(to bottom, #a855f7, #7e22ce); }
 
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
@@ -248,13 +251,14 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            justify-content: center;
         }
 
         .btn-action:hover {
             background-color: #1e293b;
         }
 
-        /* Carrusel Container reescrito para no dar saltos */
+        /* Carrusel Container */
         .carousel-wrapper {
             width: 100%;
             max-width: 1000px;
@@ -262,8 +266,8 @@
             margin: 0 auto;
             overflow: hidden;
             position: relative;
-            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
         }
 
         .carousel-track {
@@ -273,7 +277,7 @@
             width: 100%;
         }
 
-        /* Tarjetas con posicionamiento absoluto */
+        /* Tarjetas */
         .flashcard {
             width: 230px;
             height: 300px;
@@ -282,7 +286,8 @@
             top: 20px;
             left: 0;
             cursor: pointer;
-            transition: opacity 0.3s ease;
+            /* Usamos will-change para optimizar el rendimiento en móviles */
+            will-change: transform;
         }
 
         .flashcard.removing {
@@ -326,7 +331,7 @@
         }
 
         .word-en {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: #0f172a;
         }
@@ -339,7 +344,7 @@
         }
 
         .word-es {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 800;
             margin-bottom: 30px;
             text-align: center;
@@ -349,10 +354,10 @@
             background-color: white;
             color: #10b981;
             border: none;
-            padding: 12px 20px;
+            padding: 14px 24px; /* Mayor zona de toque para móviles */
             border-radius: 30px;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: transform 0.2s, background 0.2s;
@@ -376,6 +381,37 @@
             width: 100%;
         }
 
+        /* ----- MEDIA QUERIES RESPONSIVE PARA MÓVILES Y TABLETS ----- */
+        @media (max-width: 900px) {
+            .grid-units {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .grid-courses { grid-template-columns: 1fr; }
+            
+            /* Apilar controles de la partida en vertical en móviles */
+            .game-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            .machinery-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .btn-action {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-units { grid-template-columns: 1fr; }
+            .course-btn { font-size: 1.6rem; padding: 25px 15px; }
+        }
+
     </style>
 </head>
 <body>
@@ -389,7 +425,7 @@
             <button class="course-btn y1" onclick="selectCourse(1)">Year 1 <span>1st Year (A2, 12 years old)</span></button>
             <button class="course-btn y2" onclick="selectCourse(2)">Year 2 <span>2nd Year (A2/B1, 13 years old)</span></button>
             <button class="course-btn y3" onclick="selectCourse(3)">Year 3 <span>3rd Year (B1, 14 years old)</span></button>
-            <button class="course-btn y4">Year 4 <span>4th Year (B1/B2, 15 years old)</span></button>
+            <button class="course-btn y4" onclick="selectCourse(4)">Year 4 <span>4th Year (B1/B2, 15 years old)</span></button>
         </div>
     </div>
 
@@ -456,10 +492,14 @@
             3: [
                 "Teen life: a survival guide", "Where in the world?", "Make a difference", "What's the story?",
                 "Connected", "Aim High", "Brilliant!", "Unexplained"
+            ],
+            4: [
+                "Teen spirit", "In business", "Planet Earth", "Picture this",
+                "Survival", "News travels fast", "Future living", "Game on"
             ]
         };
 
-        // Vocabulario completo
+        // Vocabulario completo de 1º a 4º de la ESO
         const vocabData = {
             1: {
                 1: [
@@ -584,6 +624,124 @@
                     { en: 'modern', es: 'moderno' }, { en: 'quiet', es: 'tranquilo' }, { en: 'ugly', es: 'feo' }
                 ]
             },
+            2: {
+                1: [
+                    { en: 'item', es: 'artículo' }, { en: 'include', es: 'incluir' }, { en: 'container', es: 'recipiente' },
+                    { en: 'inside', es: 'dentro' }, { en: 'close', es: 'cerrar' }, { en: 'hide', es: 'esconder' },
+                    { en: 'safe', es: 'seguro' }, { en: 'outside', es: 'fuera' }, { en: 'buy', es: 'comprar' },
+                    { en: 'disappear', es: 'desaparecer' }, { en: 'disconnect', es: 'desconectar' }, { en: 'disagree', es: 'no estar de acuerdo' },
+                    { en: 'lend', es: 'prestar' }, { en: 'lose', es: 'perder' }, { en: 'send', es: 'enviar' },
+                    { en: 'spend', es: 'gastar' }, { en: 'borrow', es: 'tomar prestado' }, { en: 'sell', es: 'vender' },
+                    { en: 'appear', es: 'aparecer' }, { en: 'agree', es: 'estar de acuerdo' }, { en: 'connect', es: 'conectar' },
+                    { en: 'win', es: 'ganar' }, { en: 'receive', es: 'recibir' }, { en: 'save', es: 'ahorrar / guardar' },
+                    { en: 'annoyed', es: 'molesto' }, { en: 'bored', es: 'aburrido' }, { en: 'relaxed', es: 'relajado' },
+                    { en: 'embarrassed', es: 'avergonzado' }, { en: 'excited', es: 'emocionado' }, { en: 'scared', es: 'asustado' },
+                    { en: 'surprised', es: 'sorprendido' }, { en: 'tired', es: 'cansado' }, { en: 'worried', es: 'preocupado' },
+                    { en: 'unhappy', es: 'infeliz' }, { en: 'adult', es: 'adulto' }, { en: 'choice', es: 'elección' },
+                    { en: 'dangerous', es: 'peligroso' }, { en: 'identity', es: 'identidad' }, { en: 'laws', es: 'leyes' },
+                    { en: 'modern', es: 'moderno' }, { en: 'well paid', es: 'bien pagado' }
+                ],
+                2: [
+                    { en: 'Dance', es: 'baile' }, { en: 'Dancer', es: 'bailarín' }, { en: 'Design', es: 'diseño' },
+                    { en: 'Designer', es: 'diseñador' }, { en: 'Illustration', es: 'ilustración' }, { en: 'Illustrator', es: 'ilustrador' },
+                    { en: 'Music', es: 'música' }, { en: 'Musician', es: 'músico' }, { en: 'Paint', es: 'pintura' },
+                    { en: 'Painter', es: 'pintor' }, { en: 'Photography', es: 'fotografía' }, { en: 'Photographer', es: 'fotógrafo' },
+                    { en: 'Sculpture', es: 'escultura' }, { en: 'Sculptor', es: 'escultor' }, { en: 'Street Art', es: 'arte callejero' },
+                    { en: 'Street Artist', es: 'artista callejero' }, { en: 'Attractive', es: 'atractivo' }, { en: 'Awful', es: 'horrible' },
+                    { en: 'Bright', es: 'brillante' }, { en: 'Brilliant', es: 'genial / brillante' }, { en: 'Colourful', es: 'colorido' },
+                    { en: 'Enormous', es: 'enorme' }, { en: 'Huge', es: 'inmenso' }, { en: 'Incredible', es: 'increíble' },
+                    { en: 'Pretty', es: 'bonito' }, { en: 'Strange', es: 'raro / extraño' }, { en: 'Terrible', es: 'terrible' },
+                    { en: 'Unusual', es: 'inusual' }, { en: 'Cardboard', es: 'cartón' }, { en: 'Cotton', es: 'algodón' },
+                    { en: 'Glass', es: 'cristal / vidrio' }, { en: 'Leather', es: 'cuero' }, { en: 'Metal', es: 'metal' },
+                    { en: 'Paper', es: 'papel' }, { en: 'Plastic', es: 'plástico' }, { en: 'Wood', es: 'madera' }, { en: 'Wool', es: 'lana' }
+                ],
+                3: [
+                    { en: 'cycling', es: 'ciclismo' }, { en: 'drone flying', es: 'volar drones' }, { en: 'free running', es: 'parkour' },
+                    { en: 'frisbee throwing', es: 'lanzar frisbee' }, { en: 'in-line skating', es: 'patinaje en línea' }, { en: 'jogging', es: 'trotar' },
+                    { en: 'kite-flying', es: 'volar cometas' }, { en: 'microscooting', es: 'ir en patinete' }, { en: 'rowing', es: 'remo' },
+                    { en: 'working out', es: 'hacer ejercicio' }, { en: 'arts and crafts market', es: 'mercado de artesanía' },
+                    { en: 'carnival', es: 'carnaval' }, { en: 'car show', es: 'exposición de coches' }, { en: 'charity football match', es: 'partido benéfico' },
+                    { en: 'concert', es: 'concierto' }, { en: 'food festival', es: 'festival de comida' }, { en: 'funfair', es: 'feria' },
+                    { en: 'fun run', es: 'carrera popular' }, { en: 'music festival', es: 'festival de música' }, { en: 'outdoor cinema', es: 'cine al aire libre' },
+                    { en: 'bench', es: 'banco' }, { en: 'bridge', es: 'puente' }, { en: 'café', es: 'cafetería' },
+                    { en: 'duck pond', es: 'estanque de patos' }, { en: 'lake', es: 'lago' }, { en: 'open-air-theatre', es: 'teatro al aire libre' },
+                    { en: 'outdoor gym', es: 'gimnasio al aire libre' }, { en: 'path', es: 'camino' }, { en: 'picnic area', es: 'zona de picnic' },
+                    { en: 'playground', es: 'parque infantil' }, { en: 'skatepark', es: 'pista de skate' }
+                ],
+                4: [
+                    { en: 'Impatient', es: 'impaciente' }, { en: 'Lazy', es: 'perezoso' }, { en: 'Mean', es: 'tacaño / malo' },
+                    { en: 'Rude', es: 'maleducado' }, { en: 'Shy', es: 'tímido' }, { en: 'Unhelpful', es: 'poco servicial' },
+                    { en: 'Unkind', es: 'antipático' }, { en: 'Patient', es: 'paciente' }, { en: 'Hard-working', es: 'trabajador' },
+                    { en: 'Generous', es: 'generoso' }, { en: 'Polite', es: 'educado' }, { en: 'Confident', es: 'seguro de sí mismo' },
+                    { en: 'Helpful', es: 'servicial' }, { en: 'Kind', es: 'amable' }, { en: 'Find out', es: 'averiguar' },
+                    { en: 'Go away', es: 'irse' }, { en: 'Look after', es: 'cuidar' }, { en: 'Look at', es: 'mirar' },
+                    { en: 'Pick up', es: 'recoger' }, { en: 'Take part in', es: 'participar en' }, { en: 'Talk over', es: 'discutir / hablar de' },
+                    { en: 'Work out', es: 'resolver / entrenar' }, { en: 'Turn on', es: 'encender' }, { en: 'Donate to charity', es: 'donar a obras benéficas' },
+                    { en: 'Offer your seat', es: 'ceder el asiento' }, { en: 'Volunteer', es: 'ser voluntario' }, { en: 'Help across the street', es: 'ayudar a cruzar' },
+                    { en: 'Put litter in the bin', es: 'tirar basura a la papelera' }, { en: 'Write a thank you message', es: 'escribir agradecimiento' }
+                ],
+                5: [
+                    { en: 'Ears', es: 'orejas' }, { en: 'Hearing', es: 'oído' }, { en: 'Mouth', es: 'boca' },
+                    { en: 'Nose', es: 'nariz' }, { en: 'Pattern', es: 'patrón / estampado' }, { en: 'Sight', es: 'vista' },
+                    { en: 'Smell', es: 'olfato / olor' }, { en: 'Smooth', es: 'suave' }, { en: 'Soft', es: 'blando / suave' },
+                    { en: 'Stare', es: 'mirar fijamente' }, { en: 'Sweet', es: 'dulce' }, { en: 'Taste', es: 'gusto / sabor' },
+                    { en: 'Tongue', es: 'lengua' }, { en: 'Touch', es: 'tacto / tocar' }, { en: 'Voice', es: 'voz' },
+                    { en: 'Avoid', es: 'evitar' }, { en: 'Balance', es: 'mantener equilibrio' }, { en: 'Beat', es: 'vencer / latir' },
+                    { en: 'Collect', es: 'coleccionar' }, { en: 'Compete', es: 'competir' }, { en: 'Continue', es: 'continuar' },
+                    { en: 'Control', es: 'controlar' }, { en: 'Dislike', es: 'no gustar' }, { en: 'Hurt', es: 'doler / herir' },
+                    { en: 'Recognize', es: 'reconocer' }, { en: 'Solve', es: 'resolver' }, { en: 'Worry', es: 'preocuparse' },
+                    { en: 'Board Game', es: 'juego de mesa' }, { en: 'Card Game', es: 'juego de cartas' }, { en: 'Experience', es: 'experiencia' },
+                    { en: 'Imagination', es: 'imaginación' }, { en: 'Knowledge', es: 'conocimiento' }, { en: 'Luck', es: 'suerte' },
+                    { en: 'Memory', es: 'memoria' }, { en: 'Patience', es: 'paciencia' }, { en: 'Quiz game', es: 'juego de preguntas' },
+                    { en: 'Role-playing game', es: 'juego de rol' }, { en: 'Speed', es: 'velocidad' }, { en: 'Strategy', es: 'estrategia' },
+                    { en: 'Thought', es: 'pensamiento' }, { en: 'Vocabulary', es: 'vocabulario' }, { en: 'Word Game', es: 'juego de palabras' }
+                ],
+                6: [
+                    { en: 'bones', es: 'huesos' }, { en: 'brain', es: 'cerebro' }, { en: 'burn calories', es: 'quemar calorías' },
+                    { en: 'get fit', es: 'ponerse en forma' }, { en: 'heart', es: 'corazón' }, { en: 'injury', es: 'lesión' },
+                    { en: 'lose weight', es: 'perder peso' }, { en: 'lungs', es: 'pulmones' }, { en: 'muscles', es: 'músculos' },
+                    { en: 'pain', es: 'dolor' }, { en: 'rest', es: 'descansar' }, { en: 'stretch', es: 'estirar' },
+                    { en: 'train', es: 'entrenar' }, { en: 'warm up', es: 'calentar' }, { en: 'brush your hair', es: 'cepillarse el pelo' },
+                    { en: 'brush your teeth', es: 'cepillarse los dientes' }, { en: 'change your socks', es: 'cambiarse los calcetines' },
+                    { en: 'change your toothbrush', es: 'cambiar el cepillo' }, { en: 'cut your hair', es: 'cortarse el pelo' },
+                    { en: 'go to the dentist', es: 'ir al dentista' }, { en: 'go to the hairdresser', es: 'ir a la peluquería' },
+                    { en: 'illness', es: 'enfermedad' }, { en: 'deodorant', es: 'desodorante' }, { en: 'soap', es: 'jabón' },
+                    { en: 'shampoo', es: 'champú' }, { en: 'active', es: 'activo' }, { en: 'alarm', es: 'alarma' },
+                    { en: 'asleep', es: 'dormido' }, { en: 'energy', es: 'energía' }, { en: 'fit', es: 'en forma' },
+                    { en: 'fresh', es: 'fresco' }, { en: 'get up', es: 'levantarse' }, { en: 'lifestyle', es: 'estilo de vida' },
+                    { en: 'personal hygiene', es: 'higiene personal' }, { en: 'wake up', es: 'despertarse' }
+                ],
+                7: [
+                    { en: 'Achieve', es: 'conseguir' }, { en: 'Achievement', es: 'logro' }, { en: 'Behave', es: 'comportarse' },
+                    { en: 'Behaviour', es: 'comportamiento' }, { en: 'Decide', es: 'decidir' }, { en: 'Decision', es: 'decisión' },
+                    { en: 'Know', es: 'saber' }, { en: 'Knowledge', es: 'conocimiento' }, { en: 'Learn', es: 'aprender' },
+                    { en: 'Learning', es: 'aprendizaje' }, { en: 'Move', es: 'moverse' }, { en: 'Movement', es: 'movimiento' },
+                    { en: 'Respond', es: 'responder' }, { en: 'Response', es: 'respuesta' }, { en: 'Solve', es: 'resolver' },
+                    { en: 'Solution', es: 'solución' }, { en: 'Speak', es: 'hablar' }, { en: 'Speech', es: 'discurso' },
+                    { en: 'Train', es: 'entrenar' }, { en: 'Training', es: 'entrenamiento' }, { en: 'Communicate', es: 'comunicar' },
+                    { en: 'Consider', es: 'considerar' }, { en: 'Discover', es: 'descubrir' }, { en: 'Educate', es: 'educar' },
+                    { en: 'Expect', es: 'esperar' }, { en: 'Experience', es: 'experimentar' }, { en: 'Offer', es: 'ofrecer' },
+                    { en: 'Provide', es: 'proporcionar' }, { en: 'Suggest', es: 'sugerir' }, { en: 'Support', es: 'apoyar' },
+                    { en: 'Check a fact', es: 'comprobar un dato' }, { en: 'Distract you', es: 'distraerte' },
+                    { en: 'Find answers', es: 'encontrar respuestas' }, { en: 'Find out about', es: 'averiguar sobre' },
+                    { en: 'Learn from others', es: 'aprender de otros' }, { en: 'Research a subject', es: 'investigar un tema' },
+                    { en: 'Search for info', es: 'buscar información' }, { en: 'Stay focused', es: 'mantenerse enfocado' },
+                    { en: 'Use a search engine', es: 'usar un buscador' }, { en: 'Use online resources', es: 'usar recursos online' }
+                ],
+                8: [
+                    { en: 'Arrange', es: 'organizar' }, { en: 'Attend', es: 'asistir a' }, { en: 'Borrow', es: 'tomar prestado' },
+                    { en: 'Build', es: 'construir' }, { en: 'Contact', es: 'contactar con' }, { en: 'Explore', es: 'explorar' },
+                    { en: 'Improve', es: 'mejorar' }, { en: 'Organize', es: 'organizar' }, { en: 'Repair', es: 'reparar' },
+                    { en: 'Teach yourself', es: 'enseñarte' }, { en: 'Astronaut', es: 'astronauta' }, { en: 'Baker', es: 'panadero' },
+                    { en: 'Builder', es: 'constructor' }, { en: 'Cook', es: 'cocinero' }, { en: 'Dentist', es: 'dentista' },
+                    { en: 'Detective', es: 'detective' }, { en: 'Engineer', es: 'ingeniero' }, { en: 'Fashion designer', es: 'diseñador de moda' },
+                    { en: 'Hairdresser', es: 'peluquero' }, { en: 'Lawyer', es: 'abogado' }, { en: 'Manager', es: 'gerente' },
+                    { en: 'Musician', es: 'músico' }, { en: 'Police officer', es: 'policía' }, { en: 'Racing driver', es: 'piloto de carreras' },
+                    { en: 'Songwriter', es: 'compositor' }, { en: 'Video games designer', es: 'diseñador de videojuegos' },
+                    { en: 'End-of-year dance', es: 'baile de fin de curso' }, { en: 'Guest-speaker', es: 'orador invitado' },
+                    { en: 'School trip', es: 'excursión escolar' }, { en: 'Sports day', es: 'día del deporte' }, { en: 'School play', es: 'obra de teatro' }
+                ]
+            },
             3: {
                 1: [
                     { en: 'clean the bathroom', es: 'limpiar el baño' }, { en: 'clean the windows', es: 'limpiar las ventanas' }, { en: 'do the ironing', es: 'planchar' },
@@ -701,6 +859,118 @@
                     { en: 'I may ...', es: 'podría... / puede que yo...' }, { en: 'it’s unlikely I’ll ...', es: 'es poco probable que yo...' }, { en: 'I don’t reckon I’ll ...', es: 'no creo que yo...' },
                     { en: 'the chances are I’ll ...', es: 'lo más probable es que yo...' }, { en: 'I doubt I’ll ...', es: 'dudo que yo...' }
                 ]
+            },
+            4: {
+                1: [
+                    { en: 'be addicted to', es: 'ser adicto a' }, { en: 'be dependent on', es: 'ser dependiente de' }, { en: 'be selfish', es: 'ser egoísta' },
+                    { en: 'be spoiled', es: 'estar mimado' }, { en: 'be unfair', es: 'ser injusto' }, { en: 'have strong values', es: 'tener principios sólidos' },
+                    { en: 'attitude', es: 'actitud' }, { en: 'authority', es: 'autoridad' }, { en: 'generation', es: 'generación' },
+                    { en: 'judge', es: 'juzgar' }, { en: 'represent', es: 'representar' }, { en: 'respect', es: 'respetar' },
+                    { en: 'stand up for', es: 'defender' }, { en: 'ask somebody over', es: 'invitar a alguien a casa' }, { en: 'bring over', es: 'traer' },
+                    { en: 'come along', es: 'acompañar / venir' }, { en: 'end up', es: 'terminar / acabar' }, { en: 'get together', es: 'reunirse' },
+                    { en: 'hang out', es: 'pasar el rato' }, { en: 'meet up with', es: 'quedar con' }, { en: 'remind somebody of', es: 'recordar a alguien a' },
+                    { en: 'show up', es: 'aparecer' }, { en: 'tell somebody off', es: 'regañar' }, { en: 'advise', es: 'aconsejar' },
+                    { en: 'appreciate', es: 'apreciar' }, { en: 'assist', es: 'ayudar' }, { en: 'commit to', es: 'comprometerse a' },
+                    { en: 'encourage', es: 'animar' }, { en: 'responsibility', es: 'responsabilidad' }, { en: 'volunteer', es: 'ser voluntario' }
+                ],
+                2: [
+                    { en: 'bank account', es: 'cuenta bancaria' }, { en: 'cash machine (ATM)', es: 'cajero automático' }, { en: 'charge', es: 'cobrar' },
+                    { en: 'entrepreneur', es: 'emprendedor' }, { en: 'expenses', es: 'gastos' }, { en: 'income', es: 'ingresos' },
+                    { en: 'in exchange for', es: 'a cambio de' }, { en: 'profit', es: 'beneficio' }, { en: 'run', es: 'dirigir' },
+                    { en: 'savings', es: 'ahorros' }, { en: 'set up', es: 'fundar / crear' }, { en: 'wages', es: 'salario / sueldo' },
+                    { en: 'attention to detail', es: 'atención al detalle' }, { en: 'communication skills', es: 'habilidades comunicativas' }, { en: 'computer programming', es: 'programación informática' },
+                    { en: 'creativity', es: 'creatividad' }, { en: 'critical thinking', es: 'pensamiento crítico' }, { en: 'design skills', es: 'habilidades de diseño' },
+                    { en: 'leadership skills', es: 'dotes de mando' }, { en: 'negotiation skills', es: 'habilidades de negociación' }, { en: 'organizational skills', es: 'habilidades organizativas' },
+                    { en: 'time management', es: 'gestión del tiempo' }, { en: 'ambitious', es: 'ambicioso' }, { en: 'calm', es: 'tranquilo' },
+                    { en: 'competitive', es: 'competitivo' }, { en: 'curious', es: 'curioso' }, { en: 'determined', es: 'decidido' },
+                    { en: 'generous', es: 'generoso' }, { en: 'keen', es: 'entusiasta' }, { en: 'practical', es: 'práctico' }
+                ],
+                3: [
+                    { en: 'achieve a goal', es: 'alcanzar una meta' }, { en: 'give your time', es: 'dedicar tu tiempo' }, { en: 'launch a campaign', es: 'lanzar una campaña' },
+                    { en: 'make a difference', es: 'marcar la diferencia' }, { en: 'promote a cause', es: 'promover una causa' }, { en: 'raise funds', es: 'recaudar fondos' },
+                    { en: 'reach a target', es: 'lograr un objetivo' }, { en: 'save the planet', es: 'salvar el planeta' }, { en: 'donate money', es: 'donar dinero' },
+                    { en: 'sign a petition', es: 'firmar una petición' }, { en: 'hold an event', es: 'celebrar un evento' }, { en: 'find sponsors', es: 'buscar patrocinadores' },
+                    { en: 'absorb', es: 'absorber' }, { en: 'carbon footprint', es: 'huella de carbono' }, { en: 'climate change', es: 'cambio climático' },
+                    { en: 'damage', es: 'dañar / daño' }, { en: 'green', es: 'ecológico' }, { en: 'greenhouse gases', es: 'gases de efecto invernadero' },
+                    { en: 'habitats', es: 'hábitats' }, { en: 'loss', es: 'pérdida' }, { en: 'reduce', es: 'reducir' },
+                    { en: 'species', es: 'especies' }, { en: 'suffer', es: 'sufrir' }, { en: 'support', es: 'apoyar' },
+                    { en: 'sustainable', es: 'sostenible' }, { en: 'threaten', es: 'amenazar' }, { en: 'ensure', es: 'asegurar' },
+                    { en: 'establish', es: 'establecer' }, { en: 'inspire', es: 'inspirar' }, { en: 'recreate', es: 'recrear' },
+                    { en: 'transform', es: 'transformar' }
+                ],
+                4: [
+                    { en: 'angle', es: 'ángulo' }, { en: 'close-up', es: 'primer plano' }, { en: 'contrast', es: 'contraste' },
+                    { en: 'depth', es: 'profundidad' }, { en: 'effective', es: 'eficaz' }, { en: 'flash', es: 'flash' },
+                    { en: 'frame', es: 'encuadre / marco' }, { en: 'highlight', es: 'destacar' }, { en: 'impact', es: 'impacto' },
+                    { en: 'point at', es: 'apuntar a' }, { en: 'set up', es: 'preparar' }, { en: 'shoot', es: 'disparar / grabar' },
+                    { en: 'shot', es: 'toma / foto' }, { en: 'subject', es: 'sujeto' }, { en: 'viewer', es: 'espectador' },
+                    { en: 'at first', es: 'al principio' }, { en: 'by chance', es: 'por casualidad' }, { en: 'by far', es: 'con diferencia' },
+                    { en: 'in / out of focus', es: 'enfocado / desenfocado' }, { en: 'in a hurry', es: 'con prisa' }, { en: 'in contrast', es: 'en contraste' },
+                    { en: 'in fact', es: 'de hecho' }, { en: 'in general', es: 'en general' }, { en: 'out of the ordinary', es: 'fuera de lo común' },
+                    { en: 'cheerful', es: 'alegre' }, { en: 'cultural', es: 'cultural' }, { en: 'dependent', es: 'dependiente' },
+                    { en: 'effective', es: 'efectivo' }, { en: 'enjoyable', es: 'agradable' }, { en: 'hopeless', es: 'inútil / sin esperanza' },
+                    { en: 'impressive', es: 'impresionante' }, { en: 'natural', es: 'natural' }, { en: 'pleasant', es: 'agradable' },
+                    { en: 'political', es: 'político' }, { en: 'powerful', es: 'poderoso' }, { en: 'useless', es: 'inútil' },
+                    { en: 'valuable', es: 'valioso' }, { en: 'academy award', es: 'premio Óscar' }, { en: 'audience', es: 'público' },
+                    { en: 'be based on', es: 'estar basado en' }, { en: 'character', es: 'personaje' }, { en: 'critic', es: 'crítico' },
+                    { en: 'performance', es: 'actuación' }, { en: 'play the part', es: 'interpretar el papel' }, { en: 'plot', es: 'argumento' },
+                    { en: 'series', es: 'serie' }, { en: 'be set in', es: 'estar ambientado en' }, { en: 'special effects', es: 'efectos especiales' },
+                    { en: 'star', es: 'protagonizar' }, { en: 'angry / furious', es: 'enfadado / furioso' }, { en: 'big / huge', es: 'grande / enorme' },
+                    { en: 'cold / freezing', es: 'frío / helado' }, { en: 'frightened / terrified', es: 'asustado / aterrorizado' }, { en: 'funny / hilarious', es: 'divertido / graciosísimo' },
+                    { en: 'hungry / starving', es: 'hambriento / muerto de hambre' }, { en: 'interesting / fascinating', es: 'interesante / fascinante' }, { en: 'old / ancient', es: 'viejo / antiguo' },
+                    { en: 'scary / terrifying', es: 'de miedo / terrorífico' }, { en: 'small / tiny', es: 'pequeño / diminuto' }, { en: 'tired / exhausted', es: 'cansado / exhausto' },
+                    { en: 'action film', es: 'película de acción' }, { en: 'animation', es: 'película de animación' }, { en: 'comedy', es: 'comedia' },
+                    { en: 'fantasy film', es: 'película de fantasía' }, { en: 'historical drama', es: 'drama histórico' }, { en: 'horror film', es: 'película de terror' },
+                    { en: 'musical', es: 'musical' }, { en: 'romance', es: 'película romántica' }, { en: 'science fiction film', es: 'película de ciencia ficción' },
+                    { en: 'thriller', es: 'película de suspense' }, { en: 'war film', es: 'película bélica' }, { en: 'western', es: 'película del oeste' }
+                ],
+                5: [
+                    { en: 'compass', es: 'brújula' }, { en: 'first-aid kit', es: 'botiquín de primeros auxilios' }, { en: 'magnifying glass', es: 'lupa' },
+                    { en: 'matches', es: 'cerillas' }, { en: 'metal pot', es: 'olla de metal' }, { en: 'multitool', es: 'multiherramienta' },
+                    { en: 'rope', es: 'cuerda' }, { en: 'tarpaulin', es: 'lona' }, { en: 'torch', es: 'linterna' },
+                    { en: 'waterproof bag', es: 'bolsa impermeable' }, { en: 'water purification tablet', es: 'pastilla potabilizadora' }, { en: 'whistle', es: 'silbato' },
+                    { en: 'avalanche', es: 'avalancha' }, { en: 'cyber attack', es: 'ciberataque' }, { en: 'drought', es: 'sequía' },
+                    { en: 'earthquake', es: 'terremoto' }, { en: 'flooding', es: 'inundación' }, { en: 'forest fire', es: 'incendio forestal' },
+                    { en: 'global warming', es: 'calentamiento global' }, { en: 'hurricane', es: 'huracán' }, { en: 'nuclear explosion', es: 'explosión nuclear' },
+                    { en: 'volcanic eruption', es: 'erupción volcánica' }, { en: 'attitude', es: 'actitud' }, { en: 'heat', es: 'calor' },
+                    { en: 'protect', es: 'proteger' }, { en: 'source', es: 'fuente' }, { en: 'task', es: 'tarea' }
+                ],
+                6: [
+                    { en: 'breaking news', es: 'noticias de última hora' }, { en: 'eyewitness', es: 'testigo presencial' }, { en: 'headline', es: 'titular' },
+                    { en: 'journalist', es: 'periodista' }, { en: 'live', es: 'en directo' }, { en: 'news presenter', es: 'presentador de noticias' },
+                    { en: 'report', es: 'informar / reportaje' }, { en: 'reporter', es: 'reportero' }, { en: 'source', es: 'fuente' },
+                    { en: 'update', es: 'actualización' }, { en: 'celebrity influencer', es: 'influencer famoso' }, { en: 'clickbait', es: 'ciberanzuelo / clickbait' },
+                    { en: 'conspiracy theory', es: 'teoría de la conspiración' }, { en: 'current affairs', es: 'actualidad' }, { en: 'fake news', es: 'noticias falsas' },
+                    { en: 'media outlet', es: 'medio de comunicación' }, { en: 'newsfeed', es: 'muro de noticias' }, { en: 'paywall', es: 'muro de pago' },
+                    { en: 'social media platform', es: 'red social' }, { en: 'visual medium', es: 'medio visual' }, { en: 'absolutely delighted', es: 'absolutamente encantado' },
+                    { en: 'completely different', es: 'completamente diferente' }, { en: 'extremely weird', es: 'extremadamente raro' }, { en: 'highly unlikely', es: 'muy improbable' },
+                    { en: 'incredibly friendly', es: 'increíblemente amable' }, { en: 'ridiculously easy', es: 'ridículamente fácil' }
+                ],
+                7: [
+                    { en: 'affordable', es: 'asequible' }, { en: 'adaptable', es: 'adaptable' }, { en: 'energy-saving', es: 'de bajo consumo' },
+                    { en: 'experimental', es: 'experimental' }, { en: 'high-tech', es: 'de alta tecnología' }, { en: 'innovative', es: 'innovador' },
+                    { en: 'inspiring', es: 'inspirador' }, { en: 'smart', es: 'inteligente' }, { en: 'solar-powered', es: 'que funciona con energía solar' },
+                    { en: 'virtual', es: 'virtual' }, { en: 'brick', es: 'ladrillo' }, { en: 'concrete', es: 'hormigón' },
+                    { en: 'hut', es: 'cabaña' }, { en: 'iron', es: 'hierro' }, { en: 'mud', es: 'barro' },
+                    { en: 'skyscraper', es: 'rascacielos' }, { en: 'steel', es: 'acero' }, { en: 'stone', es: 'piedra' },
+                    { en: 'storey', es: 'piso / planta' }, { en: 'tent', es: 'tienda de campaña' }, { en: 'tower', es: 'torre' },
+                    { en: 'automated', es: 'automatizado' }, { en: 'block', es: 'bloquear' }, { en: 'bot', es: 'bot' },
+                    { en: 'detect', es: 'detectar' }, { en: 'simulate', es: 'simular' }, { en: 'software', es: 'software / programa' }
+                ],
+                8: [
+                    { en: 'addictive', es: 'adictivo' }, { en: 'challenge', es: 'reto / desafío' }, { en: 'competitor', es: 'competidor' },
+                    { en: 'crash', es: 'colgarse / fallar' }, { en: 'development', es: 'desarrollo' }, { en: 'educational', es: 'educativo' },
+                    { en: 'entertaining', es: 'entretenido' }, { en: 'escape', es: 'escapar' }, { en: 'expand someone\'s mind', es: 'abrir la mente de alguien' },
+                    { en: 'gaming', es: 'jugar a videojuegos' }, { en: 'hand-eye coordination', es: 'coordinación ojo-mano' }, { en: 'influence', es: 'influencia' },
+                    { en: 'plot', es: 'trama' }, { en: 'social part', es: 'parte social' }, { en: 'take risks', es: 'asumir riesgos' },
+                    { en: 'beauty', es: 'belleza' }, { en: 'growth', es: 'crecimiento' }, { en: 'happiness', es: 'felicidad' },
+                    { en: 'identity', es: 'identidad' }, { en: 'joy', es: 'alegría' }, { en: 'loss', es: 'pérdida' },
+                    { en: 'mystery', es: 'misterio' }, { en: 'reality', es: 'realidad' }, { en: 'strength', es: 'fuerza' },
+                    { en: 'truth', es: 'verdad' }, { en: 'justice', es: 'justicia' }, { en: 'victory', es: 'victoria' },
+                    { en: 'a piece of cake', es: 'pan comido' }, { en: 'haven\'t got a clue', es: 'no tener ni idea' }, { en: 'in a nutshell', es: 'en resumen' },
+                    { en: 'lose track', es: 'perder la noción' }, { en: 'out of nowhere', es: 'de la nada' }, { en: 'over the moon', es: 'loco de contento' },
+                    { en: 'to be a pain', es: 'ser un pesado' }
+                ]
             }
         };
 
@@ -716,12 +986,11 @@
         let currentYear = 1;
 
         const CARD_TOTAL_WIDTH = 250;
-        const CONTAINER_WIDTH = 1000;
 
         function selectCourse(year) {
             currentYear = year;
             
-            // Cambiar clase temática en el body para adaptar los colores globales
+            // Cambiar clase temática en el body
             document.body.className = `theme-y${year}`;
             
             // Actualizar título de la pantalla
@@ -770,6 +1039,7 @@
             shuffled.forEach((word, index) => {
                 let cardObj = createCard(word);
                 cardObj.x = index * CARD_TOTAL_WIDTH;
+                cardObj.shiftTarget = 0; // Propiedad añadida para el efecto de cerrar huecos
                 cardObj.el.style.transform = `translateX(${cardObj.x}px)`;
                 track.appendChild(cardObj.el);
                 activeCards.push(cardObj);
@@ -796,7 +1066,8 @@
 
             let cardObj = {
                 el: cardElement,
-                x: 0
+                x: 0,
+                shiftTarget: 0
             };
 
             cardElement.addEventListener('click', (e) => {
@@ -828,9 +1099,18 @@
             domElement.style.transform = `translateX(${cardObj.x}px) scale(0) translateY(-50px)`;
             domElement.style.pointerEvents = 'none'; 
             
-            activeCards = activeCards.filter(c => c !== cardObj);
-
+            // Esperamos a que la tarjeta haga su animación de desaparecer para recalcular el hueco
             setTimeout(() => {
+                let removedX = cardObj.x;
+                activeCards = activeCards.filter(c => c !== cardObj);
+                
+                // Efecto de cierre de hueco: las tarjetas a la derecha del hueco actualizan su objetivo
+                activeCards.forEach(c => {
+                    if (c.x > removedX) {
+                        c.shiftTarget -= CARD_TOTAL_WIDTH;
+                    }
+                });
+
                 domElement.remove(); 
                 
                 isPaused = false;
@@ -847,17 +1127,36 @@
         function gameLoop() {
             if (!isPaused && activeCards.length > 0) {
                 let speed = parseFloat(slider.value);
+                let wrapperWidth = document.getElementById('carouselWrapper').offsetWidth;
 
                 for (let i = 0; i < activeCards.length; i++) {
                     let card = activeCards[i];
+                    
+                    // Movimiento continuo general
                     card.x -= speed;
 
+                    // Si la tarjeta tiene que cerrar un hueco (acelerón temporal hacia la izquierda)
+                    if (card.shiftTarget < 0) {
+                        let catchUpSpeed = 15; // Velocidad del cierre del hueco
+                        card.shiftTarget += catchUpSpeed;
+                        card.x -= catchUpSpeed;
+                        
+                        // Corregir sobrepaso
+                        if (card.shiftTarget > 0) {
+                            card.x += card.shiftTarget;
+                            card.shiftTarget = 0;
+                        }
+                    }
+
+                    // Cuando la tarjeta sale completamente por la izquierda, la pasamos al final
                     if (card.x <= -CARD_TOTAL_WIDTH) {
                         let maxX = -9999;
                         for (let j = 0; j < activeCards.length; j++) {
                             if (activeCards[j].x > maxX) maxX = activeCards[j].x;
                         }
-                        card.x = Math.max(maxX + CARD_TOTAL_WIDTH, CONTAINER_WIDTH);
+                        // La colocamos al final de la línea o justo en el borde de la pantalla si hay pocas tarjetas
+                        card.x = Math.max(maxX + CARD_TOTAL_WIDTH, wrapperWidth);
+                        card.shiftTarget = 0; // Reseteamos por precaución
                     }
                     
                     card.el.style.transform = `translateX(${card.x}px)`;
