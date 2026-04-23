@@ -410,6 +410,11 @@
             h1 { font-size: 2.2rem; }
             .grid-courses { grid-template-columns: 1fr; }
             .screen { padding: 20px 10px; }
+
+            /* Ocultamos el botón de eliminar en la versión móvil */
+            .btn-remove {
+                display: none !important;
+            }
             
             /* Mantener controles en una línea y solo iconos en móviles */
             .game-header {
@@ -1111,6 +1116,29 @@
                 shiftTarget: 0
             };
 
+            // Lógica táctil para detectar el deslizamiento (swipe up)
+            let startY = 0;
+            let startX = 0;
+
+            cardElement.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].clientY;
+                startX = e.touches[0].clientX;
+            }, {passive: true});
+
+            cardElement.addEventListener('touchend', (e) => {
+                if (cardElement.classList.contains('removing')) return;
+                
+                let endY = e.changedTouches[0].clientY;
+                let endX = e.changedTouches[0].clientX;
+                let diffY = startY - endY; // Positivo si desliza hacia arriba
+                let diffX = Math.abs(startX - endX);
+
+                // Si el deslizamiento hacia arriba es mayor a 40px y es vertical
+                if (diffY > 40 && diffX < Math.abs(diffY)) {
+                    removeCard(cardObj, true);
+                }
+            });
+
             cardElement.addEventListener('click', (e) => {
                 if (cardElement.classList.contains('removing')) return;
 
@@ -1134,10 +1162,19 @@
             return cardObj;
         }
 
-        function removeCard(cardObj) {
+        function removeCard(cardObj, isSwipe = false) {
             let domElement = cardObj.el;
             domElement.classList.add('removing');
-            domElement.style.transform = `translateX(${cardObj.x}px) scale(0) translateY(-50px)`;
+            
+            if (isSwipe) {
+                // Efecto rápido de salida hacia arriba al deslizar
+                domElement.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
+                domElement.style.transform = `translateX(${cardObj.x}px) translateY(-300px) scale(0.6)`;
+            } else {
+                // Efecto de desaparecer al pulsar el botón
+                domElement.style.transform = `translateX(${cardObj.x}px) scale(0) translateY(-50px)`;
+            }
+            
             domElement.style.pointerEvents = 'none'; 
             
             // Esperamos a que la tarjeta haga su animación de desaparecer para recalcular el hueco
