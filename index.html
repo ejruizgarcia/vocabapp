@@ -82,7 +82,7 @@
         .screen {
             width: 100%;
             max-width: 1100px;
-            padding: 40px 20px;
+            padding: 20px; /* Reducido para evitar scroll vertical */
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.4s ease-out;
@@ -104,7 +104,7 @@
         p.subtitle {
             font-size: 1.2rem;
             color: #475569;
-            margin-bottom: 30px;
+            margin-bottom: 20px; /* Reducido para subir el contenido */
         }
 
         /* Pantalla 1: Cursos */
@@ -186,7 +186,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 15px; /* Reducido para subir el contenido */
             background: white;
             padding: 15px 25px;
             border-radius: 16px;
@@ -395,9 +395,13 @@
             text-align: center;
             font-size: 0.85rem;
             color: #64748b;
-            padding: 20px;
+            padding: 10px 20px 15px 20px; /* Ajustado para que suba un poco */
             width: 100%;
             margin-top: auto;
+        }
+
+        .mobile-break {
+            display: none;
         }
 
         /* ----- MEDIA QUERIES RESPONSIVE PARA MÓVILES Y TABLETS ----- */
@@ -410,7 +414,11 @@
         @media (max-width: 768px) {
             h1 { font-size: 2.2rem; }
             .grid-courses { grid-template-columns: 1fr; }
-            .screen { padding: 20px 10px; }
+            .screen { padding: 10px; } /* Reducido para móviles */
+
+            .mobile-break {
+                display: block;
+            }
 
             /* Ocultamos el botón de eliminar en la versión móvil */
             .btn-remove {
@@ -487,7 +495,7 @@
             <!-- Las unidades se inyectan dinámicamente aquí -->
         </div>
         
-        <div style="margin-top: 40px;">
+        <div style="margin-top: 20px;">
             <button class="btn-action" onclick="navigate('screenCourse')">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 <span class="btn-text">Go Back</span>
@@ -520,7 +528,9 @@
             <div class="carousel-track" id="track"></div>
             <div class="finish-message" id="finishMsg">
                 🎉 Congratulations! 🎉
-                <span style="font-size: 1.2rem; color: #475569; margin-top: 10px; font-weight: 600;">You have completed the vocabulary.</span>
+                <span style="font-size: 1.2rem; color: #475569; margin-top: 10px; font-weight: 600; text-align: center;">
+                    You have completed <br class="mobile-break">the vocabulary.
+                </span>
                 <button class="btn-action" style="margin-top: 20px;" onclick="startGame(currentUnit)">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 </button>
