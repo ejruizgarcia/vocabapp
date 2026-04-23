@@ -1137,8 +1137,8 @@
             }, {passive: true});
 
             cardElement.addEventListener('touchmove', (e) => {
-                // Solo permitimos el arrastre si la tarjeta está dada la vuelta y no se está borrando ya
-                if (cardElement.classList.contains('removing') || !cardElement.classList.contains('is-flipped')) return;
+                // Solo permitimos el arrastre si no se está borrando ya (quitamos la restricción de que esté girada)
+                if (cardElement.classList.contains('removing')) return;
 
                 let currentY = e.touches[0].clientY;
                 let currentX = e.touches[0].clientX;
@@ -1155,7 +1155,11 @@
                     inner.style.transition = 'none';
                     // Pequeño efecto de inclinación proporcional a lo que se ha subido
                     let tilt = diffY / 20; 
-                    inner.style.transform = `rotateY(180deg) translateY(${diffY}px) rotateZ(${tilt}deg)`;
+                    
+                    // Respetamos el giro si la tarjeta estaba mostrándose por el dorso
+                    let baseRotation = cardElement.classList.contains('is-flipped') ? 'rotateY(180deg) ' : '';
+                    
+                    inner.style.transform = `${baseRotation}translateY(${diffY}px) rotateZ(${tilt}deg)`;
                     
                     e.preventDefault(); // Previene que la pantalla del móvil haga scroll al arrastrar
                 }
