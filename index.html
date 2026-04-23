@@ -82,11 +82,11 @@
         .screen {
             width: 100%;
             max-width: 1100px;
-            padding: 20px; /* Reducido para evitar scroll vertical */
+            padding: 20px; 
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.4s ease-out;
-            flex-grow: 1; /* Permite que la pantalla ocupe toda la altura para centrar el carrusel */
+            flex-grow: 1; 
         }
 
         @keyframes fadeIn {
@@ -104,7 +104,7 @@
         p.subtitle {
             font-size: 1.2rem;
             color: #475569;
-            margin-bottom: 20px; /* Reducido para subir el contenido */
+            margin-bottom: 20px; 
         }
 
         /* Pantalla 1: Cursos */
@@ -186,7 +186,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px; /* Reducido para subir el contenido */
+            margin-bottom: 15px; 
             background: white;
             padding: 15px 25px;
             border-radius: 16px;
@@ -267,12 +267,50 @@
             background-color: #1e293b;
         }
 
-        /* Carrusel Container reescrito para no dar saltos */
-        .carousel-wrapper {
+        /* Contenedor central y Flechas de Navegación Manual */
+        .carousel-container {
+            position: relative;
             width: 100%;
             max-width: 1000px;
+            margin: auto;
+        }
+
+        #navArrows { display: none; }
+
+        @media (min-width: 769px) {
+            #navArrows:not(.hidden-arrows) {
+                display: flex;
+                position: absolute;
+                top: 50%;
+                left: -60px;
+                right: -60px;
+                justify-content: space-between;
+                transform: translateY(-50%);
+                z-index: 10;
+                pointer-events: none;
+            }
+            .nav-btn {
+                pointer-events: auto;
+                background: white;
+                border: 2px solid #cbd5e1;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                cursor: pointer;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #334155;
+                transition: background 0.2s, transform 0.2s;
+            }
+            .nav-btn:hover { background: #f1f5f9; transform: scale(1.1); }
+        }
+
+        /* Carrusel Wrapper */
+        .carousel-wrapper {
+            width: 100%;
             height: 380px;
-            margin: auto auto; /* Centra el carrusel horizontal y verticalmente */
             overflow: hidden;
             position: relative;
             mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
@@ -295,7 +333,6 @@
             top: 20px;
             left: 0;
             cursor: pointer;
-            /* Usamos will-change para optimizar el rendimiento en móviles */
             will-change: transform;
         }
 
@@ -356,7 +393,7 @@
         .word-es {
             font-size: 1.3rem;
             font-weight: 800;
-            margin-bottom: 30px; /* Margen que se quita en móviles */
+            margin-bottom: 30px; 
             text-align: center;
         }
 
@@ -364,7 +401,7 @@
             background-color: white;
             color: var(--theme-color, var(--year1));
             border: none;
-            padding: 14px 24px; /* Mayor zona de toque para móviles */
+            padding: 14px 24px; 
             border-radius: 30px;
             font-weight: 800;
             font-size: 1.1rem;
@@ -395,7 +432,7 @@
             text-align: center;
             font-size: 0.85rem;
             color: #64748b;
-            padding: 10px 20px 15px 20px; /* Ajustado para que suba un poco */
+            padding: 10px 20px 15px 20px; 
             width: 100%;
             margin-top: auto;
         }
@@ -414,23 +451,20 @@
         @media (max-width: 768px) {
             h1 { font-size: 2.2rem; }
             .grid-courses { grid-template-columns: 1fr; }
-            .screen { padding: 10px; } /* Reducido para móviles */
+            .screen { padding: 10px; } 
 
             .mobile-break {
                 display: block;
             }
 
-            /* Ocultamos el botón de eliminar en la versión móvil */
             .btn-remove {
                 display: none !important;
             }
             
-            /* Centramos el texto al no tener botón abajo */
             .word-es {
                 margin-bottom: 0 !important; 
             }
 
-            /* Mantener controles en una línea y solo iconos en móviles */
             .game-header {
                 flex-direction: row;
                 gap: 10px;
@@ -515,7 +549,8 @@
                 <label for="speedSlider">
                     Speed
                 </label>
-                <input type="range" id="speedSlider" min="0.5" max="6" step="0.1" value="1.5">
+                <!-- Ajuste a min="0" para permitir movimiento manual -->
+                <input type="range" id="speedSlider" min="0" max="6" step="0.1" value="1.5">
             </div>
 
             <button class="btn-action" onclick="startGame(currentUnit)">
@@ -524,16 +559,30 @@
             </button>
         </div>
 
-        <div class="carousel-wrapper" id="carouselWrapper">
-            <div class="carousel-track" id="track"></div>
-            <div class="finish-message" id="finishMsg">
-                🎉 Congratulations! 🎉
-                <span style="font-size: 1.2rem; color: #475569; margin-top: 10px; font-weight: 600; text-align: center;">
-                    You have completed <br class="mobile-break">the vocabulary.
-                </span>
-                <button class="btn-action" style="margin-top: 20px;" onclick="startGame(currentUnit)">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        <div class="carousel-container">
+            <!-- Flechas de navegación para versión Escritorio cuando la velocidad es 0 -->
+            <div id="navArrows" class="hidden-arrows">
+                <!-- Flecha izquierda: Desplaza las cartas hacia la derecha (mostrar anterior) -->
+                <button class="nav-btn" onclick="shiftAllCards(1)">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
+                <!-- Flecha derecha: Desplaza las cartas hacia la izquierda (mostrar siguiente) -->
+                <button class="nav-btn" onclick="shiftAllCards(-1)">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+            
+            <div class="carousel-wrapper" id="carouselWrapper">
+                <div class="carousel-track" id="track"></div>
+                <div class="finish-message" id="finishMsg">
+                    🎉 Congratulations! 🎉
+                    <span style="font-size: 1.2rem; color: #475569; margin-top: 10px; font-weight: 600; text-align: center;">
+                        You have completed <br class="mobile-break">the vocabulary.
+                    </span>
+                    <button class="btn-action" style="margin-top: 20px;" onclick="startGame(currentUnit)">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1085,6 +1134,18 @@
             }
         }
 
+        // Control para visibilidad de flechas en escritorio
+        function checkSpeedForArrows() {
+            let speed = parseFloat(slider.value);
+            let navArrows = document.getElementById('navArrows');
+            if (speed === 0) {
+                navArrows.classList.remove('hidden-arrows');
+            } else {
+                navArrows.classList.add('hidden-arrows');
+            }
+        }
+        slider.addEventListener('input', checkSpeedForArrows);
+
         function startGame(unit) {
             currentUnit = unit;
             navigate('screenGame');
@@ -1095,6 +1156,9 @@
             isPaused = false;
             activeCard = null;
             
+            // Comprobamos la velocidad actual para ver si tocan flechas o no
+            checkSpeedForArrows();
+
             // Seleccionamos las palabras de la unidad y barajamos
             let words = vocabData[currentYear][currentUnit] || [];
             let shuffled = [...words].sort(() => Math.random() - 0.5);
@@ -1102,7 +1166,7 @@
             shuffled.forEach((word, index) => {
                 let cardObj = createCard(word);
                 cardObj.x = index * CARD_TOTAL_WIDTH;
-                cardObj.shiftTarget = 0; // Propiedad añadida para el efecto de cerrar huecos
+                cardObj.shiftTarget = 0; 
                 cardObj.el.style.transform = `translateX(${cardObj.x}px)`;
                 track.appendChild(cardObj.el);
                 activeCards.push(cardObj);
@@ -1110,6 +1174,16 @@
 
             cancelAnimationFrame(animationId);
             gameLoop();
+        }
+
+        // Desplaza el carrusel completo de forma manual
+        function shiftAllCards(dir) {
+            // Evitamos solapar desplazamientos si ya hay uno en curso
+            if (activeCards.some(c => c.shiftTarget !== 0)) return;
+            let amount = CARD_TOTAL_WIDTH * dir;
+            activeCards.forEach(c => {
+                c.shiftTarget += amount;
+            });
         }
 
         function createCard(wordData) {
@@ -1133,45 +1207,58 @@
                 shiftTarget: 0
             };
 
-            // Lógica táctil para detectar el deslizamiento (swipe up)
+            // Lógica táctil para el swipe
             let startY = 0;
             let startX = 0;
-            let isDragging = false;
+            let isDraggingVertical = false;
+            let isDraggingHorizontal = false;
             let currentDiffY = 0;
+            let currentDiffX = 0;
 
             cardElement.addEventListener('touchstart', (e) => {
+                // Bloqueamos arrastres si ya se está animando un cambio manual
+                if (activeCards.some(c => c.shiftTarget !== 0)) return;
+
                 startY = e.touches[0].clientY;
                 startX = e.touches[0].clientX;
-                isDragging = false;
+                isDraggingVertical = false;
+                isDraggingHorizontal = false;
                 currentDiffY = 0;
+                currentDiffX = 0;
             }, {passive: true});
 
             cardElement.addEventListener('touchmove', (e) => {
-                // Solo permitimos el arrastre si no se está borrando ya (quitamos la restricción de que esté girada)
                 if (cardElement.classList.contains('removing')) return;
+                let speed = parseFloat(slider.value);
 
                 let currentY = e.touches[0].clientY;
                 let currentX = e.touches[0].clientX;
                 let diffY = currentY - startY; // Si sube, es negativo
-                let diffX = Math.abs(currentX - startX);
+                let diffX = currentX - startX; // Negativo es izquierda, positivo derecha
 
-                // Si se mueve hacia arriba más que hacia los lados
-                if (diffY < 0 && Math.abs(diffY) > diffX) {
-                    isDragging = true;
+                // Determinar dirección del gesto inicial
+                if (!isDraggingVertical && !isDraggingHorizontal) {
+                    if (Math.abs(diffY) > Math.abs(diffX) && diffY < 0) {
+                        isDraggingVertical = true;
+                    } else if (Math.abs(diffX) > Math.abs(diffY) && speed === 0) {
+                        isDraggingHorizontal = true;
+                    }
+                }
+
+                if (isDraggingVertical) {
                     currentDiffY = diffY;
                     let inner = cardElement.querySelector('.flashcard-inner');
-                    
-                    // Quitamos la transición CSS para que siga al dedo de forma inmediata
                     inner.style.transition = 'none';
-                    // Pequeño efecto de inclinación proporcional a lo que se ha subido
                     let tilt = diffY / 20; 
-                    
-                    // Respetamos el giro si la tarjeta estaba mostrándose por el dorso
                     let baseRotation = cardElement.classList.contains('is-flipped') ? 'rotateY(180deg) ' : '';
-                    
                     inner.style.transform = `${baseRotation}translateY(${diffY}px) rotateZ(${tilt}deg)`;
-                    
-                    e.preventDefault(); // Previene que la pantalla del móvil haga scroll al arrastrar
+                    e.preventDefault(); 
+                } else if (isDraggingHorizontal) {
+                    currentDiffX = diffX;
+                    // Movemos el track visualmente de forma temporal
+                    document.getElementById('track').style.transition = 'none';
+                    document.getElementById('track').style.transform = `translateX(${diffX}px)`;
+                    e.preventDefault();
                 }
             }, {passive: false});
 
@@ -1179,18 +1266,32 @@
                 if (cardElement.classList.contains('removing')) return;
                 
                 let inner = cardElement.querySelector('.flashcard-inner');
-                // Restauramos la transición suave del CSS
                 inner.style.transition = ''; 
 
-                // Si ha arrastrado más de 40px hacia arriba
-                if (isDragging && currentDiffY < -40) {
-                    removeCard(cardObj, true);
-                } else {
-                    // Si no fue suficiente o no estaba arrastrando, reseteamos el estilo en línea
-                    // para que la clase CSS vuelva a aplicar el giro normal
-                    inner.style.transform = '';
+                if (isDraggingVertical) {
+                    if (currentDiffY < -40) {
+                        removeCard(cardObj, true);
+                    } else {
+                        inner.style.transform = '';
+                    }
+                } else if (isDraggingHorizontal) {
+                    let trackEl = document.getElementById('track');
+                    trackEl.style.transition = 'transform 0.3s ease';
+                    trackEl.style.transform = `translateX(0px)`;
+                    
+                    if (currentDiffX < -40) {
+                        shiftAllCards(-1); // Swipe izquierda -> Pasa a la siguiente carta
+                    } else if (currentDiffX > 40) {
+                        shiftAllCards(1);  // Swipe derecha -> Pasa a la carta anterior
+                    }
+                    
+                    setTimeout(() => {
+                        trackEl.style.transition = 'none';
+                    }, 300);
                 }
-                isDragging = false;
+
+                isDraggingVertical = false;
+                isDraggingHorizontal = false;
             });
 
             cardElement.addEventListener('click', (e) => {
@@ -1221,22 +1322,18 @@
             domElement.classList.add('removing');
             
             if (isSwipe) {
-                // Efecto rápido de salida hacia arriba al deslizar
                 domElement.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
                 domElement.style.transform = `translateX(${cardObj.x}px) translateY(-500px) scale(0.8)`;
             } else {
-                // Efecto de desaparecer al pulsar el botón
                 domElement.style.transform = `translateX(${cardObj.x}px) scale(0) translateY(-50px)`;
             }
             
             domElement.style.pointerEvents = 'none'; 
             
-            // Esperamos a que la tarjeta haga su animación de desaparecer para recalcular el hueco
             setTimeout(() => {
                 let removedX = cardObj.x;
                 activeCards = activeCards.filter(c => c !== cardObj);
                 
-                // Efecto de cierre de hueco: las tarjetas a la derecha del hueco actualizan su objetivo
                 activeCards.forEach(c => {
                     if (c.x > removedX) {
                         c.shiftTarget -= CARD_TOTAL_WIDTH;
@@ -1264,31 +1361,40 @@
                 for (let i = 0; i < activeCards.length; i++) {
                     let card = activeCards[i];
                     
-                    // Movimiento continuo general
+                    // Movimiento continuo
                     card.x -= speed;
 
-                    // Si la tarjeta tiene que cerrar un hueco (acelerón temporal hacia la izquierda)
-                    if (card.shiftTarget < 0) {
-                        let catchUpSpeed = 15; // Velocidad del cierre del hueco
-                        card.shiftTarget += catchUpSpeed;
-                        card.x -= catchUpSpeed;
-                        
-                        // Corregir sobrepaso
-                        if (card.shiftTarget > 0) {
-                            card.x += card.shiftTarget;
-                            card.shiftTarget = 0;
+                    // Desplazamiento manual o cierre de huecos
+                    if (card.shiftTarget !== 0) {
+                        let shiftSpeed = 25; 
+                        let dir = Math.sign(card.shiftTarget);
+                        let moveAmount = shiftSpeed * dir;
+
+                        if (Math.abs(card.shiftTarget) < shiftSpeed) {
+                            moveAmount = card.shiftTarget;
                         }
+
+                        card.shiftTarget -= moveAmount;
+                        card.x += moveAmount;
                     }
 
-                    // Cuando la tarjeta sale completamente por la izquierda, la pasamos al final
-                    if (card.x <= -CARD_TOTAL_WIDTH) {
+                    // Envolvimiento infinito hacia la izquierda
+                    if (card.x <= -CARD_TOTAL_WIDTH && card.shiftTarget <= 0) {
                         let maxX = -9999;
                         for (let j = 0; j < activeCards.length; j++) {
                             if (activeCards[j].x > maxX) maxX = activeCards[j].x;
                         }
-                        // La colocamos al final de la línea o justo en el borde de la pantalla si hay pocas tarjetas
                         card.x = Math.max(maxX + CARD_TOTAL_WIDTH, wrapperWidth);
-                        card.shiftTarget = 0; // Reseteamos por precaución
+                    }
+                    
+                    // Envolvimiento infinito hacia la derecha (solo ocurre en manual)
+                    let rightBound = Math.max(wrapperWidth, activeCards.length * CARD_TOTAL_WIDTH);
+                    if (card.x >= rightBound && card.shiftTarget >= 0 && speed === 0) {
+                        let minX = 99999;
+                        for (let j = 0; j < activeCards.length; j++) {
+                            if (activeCards[j].x < minX) minX = activeCards[j].x;
+                        }
+                        card.x = minX - CARD_TOTAL_WIDTH;
                     }
                     
                     card.el.style.transform = `translateX(${card.x}px)`;
