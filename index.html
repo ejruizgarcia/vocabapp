@@ -1387,6 +1387,43 @@
             gameLoop();
         }
 
+        // Soporte para gestos de Trackpad (dos dedos en ordenadores)
+        let wheelCooldown = false;
+        document.getElementById('screenGame').addEventListener('wheel', (e) => {
+            if (wheelCooldown || activeCards.length === 0) return;
+            
+            // Umbral para evitar movimientos microscópicos accidentales
+            if (Math.abs(e.deltaY) < 30 && Math.abs(e.deltaX) < 30) return;
+
+            if (isTiktokMode) {
+                if (e.deltaY > 30) {
+                    nextTiktok();
+                    triggerWheelCooldown();
+                } else if (e.deltaY < -30) {
+                    prevTiktok();
+                    triggerWheelCooldown();
+                }
+            } else {
+                let speed = parseFloat(slider.value);
+                if (speed === 0) {
+                    // Si la velocidad es 0, permite pasar tarjetas arrastrando en el trackpad
+                    if (e.deltaX > 30 || e.deltaY > 30) {
+                        shiftAllCards(-1); // Deslizar abajo o derecha pasa a la Siguiente
+                        triggerWheelCooldown();
+                    } else if (e.deltaX < -30 || e.deltaY < -30) {
+                        shiftAllCards(1);  // Deslizar arriba o izquierda vuelve a la Anterior
+                        triggerWheelCooldown();
+                    }
+                }
+            }
+        }, { passive: true });
+
+        function triggerWheelCooldown() {
+            wheelCooldown = true;
+            // 400ms es el tiempo exacto que dura la animación visual
+            setTimeout(() => wheelCooldown = false, 400); 
+        }
+
         function shiftAllCards(dir) {
             if (activeCards.some(c => c.shiftTarget !== 0) || isTiktokMode) return;
             let amount = CARD_TOTAL_WIDTH * dir;
