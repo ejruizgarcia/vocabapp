@@ -68,12 +68,12 @@
         body {
             background-color: var(--bg-main);
             color: var(--text-dark);
-            min-height: 100vh;
-            min-height: 100dvh; /* Soporte moderno para evitar problemas con la barra móvil */
+            height: 100vh;
+            height: 100dvh; /* Soporte moderno para evitar problemas con la barra móvil */
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
+            overflow: hidden; /* Evita que la página completa haga scroll y deje espacio vacío abajo */
             transition: background-color 0.3s ease;
         }
 
@@ -89,6 +89,12 @@
             flex-direction: column;
             animation: fadeIn 0.4s ease-out;
             flex-grow: 1; 
+            overflow-y: auto; /* Permite scroll interno si los menús son muy largos */
+            scrollbar-width: none; /* Oculta la barra de scroll (Firefox) */
+        }
+        
+        .screen::-webkit-scrollbar {
+            display: none; /* Oculta la barra de scroll (Chrome/Safari) */
         }
 
         @keyframes fadeIn {
@@ -1341,7 +1347,7 @@
             let throwY = (Math.random() * 200) - 100;
             let rot = dir * (Math.random() * 90 + 45);
             
-            cardElement.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
+            cardElement.style.transition = 'transform 0.15s ease-out, opacity 0.15s ease-out';
             cardElement.style.transform = `translate(calc(-50% + ${throwX}px), calc(-50% + ${throwY}px)) rotateZ(${rot}deg)`;
             cardElement.style.opacity = '0';
             cardElement.style.pointerEvents = 'none';
@@ -1356,7 +1362,7 @@
                 } else {
                     renderTiktok();
                 }
-            }, 400);
+            }, 150);
         };
 
         function createCard(wordData) {
@@ -1552,7 +1558,7 @@
             
             if (isSwipe) {
                 let rot = (Math.random() * 30) - 15;
-                domElement.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                domElement.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out';
                 domElement.style.transform = `translateX(${cardObj.x}px) translateY(-800px) rotateZ(${rot}deg)`;
             } else {
                 let dir = Math.random() > 0.5 ? 1 : -1;
@@ -1560,7 +1566,7 @@
                 let throwY = (Math.random() * 200) - 100;
                 let rot = dir * (Math.random() * 90 + 45);
                 
-                domElement.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+                domElement.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out';
                 domElement.style.transform = `translateX(${cardObj.x + throwX}px) translateY(${throwY}px) rotateZ(${rot}deg)`;
             }
             
@@ -1586,7 +1592,7 @@
                     finishMsg.style.display = 'flex';
                     cancelAnimationFrame(animationId);
                 }
-            }, 300);
+            }, 150);
         }
 
         function gameLoop() {
