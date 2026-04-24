@@ -1470,10 +1470,10 @@
             cardElement.innerHTML = `
                 <div class="flashcard-inner">
                     <div class="card-face card-front">
-                        <span class="word-en">${wordData.en}</span>
+                        <span class="word-en">${wordData.en.toLowerCase()}</span>
                     </div>
                     <div class="card-face card-back">
-                        <span class="word-es">${wordData.es}</span>
+                        <span class="word-es">${wordData.es.toLowerCase()}</span>
                         <button class="btn-remove">Got it! ✔️</button>
                     </div>
                 </div>
