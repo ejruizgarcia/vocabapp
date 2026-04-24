@@ -337,7 +337,7 @@
         .tiktok-active .carousel-wrapper {
             mask-image: none !important;
             -webkit-mask-image: none !important;
-            height: 70vh; /* Ocupa más pantalla */
+            height: 80vh; /* Ocupa más pantalla para evitar huecos */
             max-height: 650px;
             overflow: visible;
         }
@@ -356,7 +356,7 @@
             display: none;
             position: absolute;
             right: 20px;
-            bottom: 10%; /* Bajado aprox 1cm (antes 20%) */
+            bottom: 25px; /* Bajado a unos 2.5cm del borde de la tarjeta */
             width: 60px;
             height: 60px;
             background-color: var(--theme-color, #10b981);
@@ -468,6 +468,20 @@
             border: 6px solid var(--theme-color-dark, #0284c7);
         }
 
+        /* FUENTES RESTAURADAS A SU TAMAÑO ORIGINAL */
+        .word-en {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .word-es {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 30px; 
+            text-align: center;
+        }
+
         .btn-remove {
             background-color: white;
             color: var(--theme-color, var(--year1));
@@ -508,7 +522,18 @@
             margin-top: auto;
         }
 
-        .tiktok-active .disclaimer { color: #94a3b8; } 
+        /* Disclaimer en Modo TikTok flota sobre el fondo oscuro y es más pequeño */
+        .tiktok-active .disclaimer { 
+            position: absolute;
+            bottom: 25px;
+            left: 0;
+            width: 100%;
+            font-size: 0.7rem;
+            color: #94a3b8; 
+            padding: 0 10px;
+            margin: 0;
+            pointer-events: none;
+        } 
 
         .mobile-break { display: none; }
 
@@ -521,14 +546,10 @@
             h1 { font-size: 2.2rem; }
             .grid-courses { grid-template-columns: 1fr; }
             .screen { padding: 10px; } 
-            
-            .disclaimer {
-                padding-bottom: 35px; /* Sube el disclaimer un poco hacia arriba en móvil */
-            }
 
             body.tiktok-active {
                 height: 100vh;
-                height: 100dvh; /* Bloquea la pantalla para eliminar cualquier hueco debajo */
+                height: 100dvh; 
                 overflow: hidden;
             }
 
@@ -558,7 +579,7 @@
             }
             .btn-text { display: none; }
             .carousel-wrapper { height: 330px; }
-            .tiktok-active .carousel-wrapper { height: 75vh; } /* Aprovecha el espacio extra sin scroll */
+            .tiktok-active .carousel-wrapper { height: 80vh; } 
         }
 
         @media (max-width: 480px) {
@@ -1096,7 +1117,7 @@
                     { en: 'cold / freezing', es: 'frío / helado' }, { en: 'frightened / terrified', es: 'asustado / aterrorizado' }, { en: 'funny / hilarious', es: 'divertido / graciosísimo' },
                     { en: 'hungry / starving', es: 'hambriento / muerto de hambre' }, { en: 'interesting / fascinating', es: 'interesante / fascinante' }, { en: 'old / ancient', es: 'viejo / antiguo' },
                     { en: 'scary / terrifying', es: 'de miedo / terrorífico' }, { en: 'small / tiny', es: 'pequeño / diminuto' }, { en: 'tired / exhausted', es: 'cansado / exhausto' },
-                    { en: 'action film', es: 'película de acción' }, { en: 'animation', es: 'película de animation' }, { en: 'comedy', es: 'comedia' },
+                    { en: 'action film', es: 'película de acción' }, { en: 'animation', es: 'película de animación' }, { en: 'comedy', es: 'comedia' },
                     { en: 'fantasy film', es: 'película de fantasía' }, { en: 'historical drama', es: 'drama histórico' }, { en: 'horror film', es: 'película de terror' },
                     { en: 'musical', es: 'musical' }, { en: 'romance', es: 'película romántica' }, { en: 'science fiction film', es: 'película de ciencia ficción' },
                     { en: 'thriller', es: 'película de suspense' }, { en: 'war film', es: 'película bélica' }, { en: 'western', es: 'película del oeste' }
@@ -1161,7 +1182,7 @@
         let activeCard = null;
         let currentUnit = 1;
         let currentYear = 1;
-        let isTiktokMode = false; // Nueva variable de estado para Modo TikTok
+        let isTiktokMode = false;
 
         const CARD_TOTAL_WIDTH = 250;
 
@@ -1316,7 +1337,6 @@
 
             cardElement.classList.add('removing');
             
-            // Animación aleatoria hacia los lados con rotación
             let dir = Math.random() > 0.5 ? 1 : -1;
             let throwX = dir * (window.innerWidth + 200);
             let throwY = (Math.random() * 200) - 100;
@@ -1385,7 +1405,6 @@
                 currentDiffX = 0;
                 isSwipingTiktok = false;
 
-                // En modo TikTok giramos inmediatamente al pulsar (Tap & Hold)
                 if (isTiktokMode && !cardElement.classList.contains('removing')) {
                     cardElement.classList.add('is-flipped');
                 }
@@ -1399,7 +1418,6 @@
                 let diffY = currentY - startY; 
                 let diffX = currentX - startX; 
 
-                // GESTOS MODO TIKTOK
                 if (isTiktokMode) {
                     if (Math.abs(diffY) > 10 || Math.abs(diffX) > 10) {
                         isSwipingTiktok = true;
@@ -1414,7 +1432,6 @@
                     return;
                 }
 
-                // GESTOS MODO CINTA (Horizontal Manual o arrastre vertical para eliminar)
                 let speed = parseFloat(slider.value);
                 if (!isDraggingVertical && !isDraggingHorizontal) {
                     if (Math.abs(diffY) > Math.abs(diffX) && diffY < 0) {
@@ -1443,7 +1460,6 @@
             const handleEnd = (e) => {
                 if (cardElement.classList.contains('removing')) return;
 
-                // TERMINAR MODO TIKTOK
                 if (isTiktokMode) {
                     cardElement.classList.remove('is-flipped'); 
                     cardElement.style.transition = ''; 
@@ -1462,7 +1478,6 @@
                     return;
                 }
 
-                // TERMINAR MODO CINTA
                 let inner = cardElement.querySelector('.flashcard-inner');
                 inner.style.transition = ''; 
 
@@ -1537,12 +1552,10 @@
             domElement.classList.add('removing');
             
             if (isSwipe) {
-                // Swipe up nativo con un pequeño giro aleatorio
                 let rot = (Math.random() * 30) - 15;
                 domElement.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
                 domElement.style.transform = `translateX(${cardObj.x}px) translateY(-800px) rotateZ(${rot}deg)`;
             } else {
-                // Botón tradicional: salida lateral rápida y girando
                 let dir = Math.random() > 0.5 ? 1 : -1;
                 let throwX = dir * (window.innerWidth + 200);
                 let throwY = (Math.random() * 200) - 100;
