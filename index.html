@@ -1396,22 +1396,23 @@
             if (Math.abs(e.deltaY) < 30 && Math.abs(e.deltaX) < 30) return;
 
             if (isTiktokMode) {
+                // Invertido: deslizar hacia arriba (deltaY < -30) va a la anterior, abajo a la siguiente
                 if (e.deltaY > 30) {
-                    nextTiktok();
+                    prevTiktok();
                     triggerWheelCooldown();
                 } else if (e.deltaY < -30) {
-                    prevTiktok();
+                    nextTiktok();
                     triggerWheelCooldown();
                 }
             } else {
                 let speed = parseFloat(slider.value);
                 if (speed === 0) {
-                    // Si la velocidad es 0, permite pasar tarjetas arrastrando en el trackpad
+                    // Invertido también para modo normal
                     if (e.deltaX > 30 || e.deltaY > 30) {
-                        shiftAllCards(-1); // Deslizar abajo o derecha pasa a la Siguiente
+                        shiftAllCards(1); 
                         triggerWheelCooldown();
                     } else if (e.deltaX < -30 || e.deltaY < -30) {
-                        shiftAllCards(1);  // Deslizar arriba o izquierda vuelve a la Anterior
+                        shiftAllCards(-1);  
                         triggerWheelCooldown();
                     }
                 }
@@ -1445,7 +1446,7 @@
             let throwY = (Math.random() * 200) - 100;
             let rot = dir * (Math.random() * 90 + 45);
             
-            cardElement.style.transition = 'transform 0.15s ease-out, opacity 0.15s ease-out';
+            cardElement.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
             cardElement.style.transform = `translate(calc(-50% + ${throwX}px), calc(-50% + ${throwY}px)) rotateZ(${rot}deg)`;
             cardElement.style.opacity = '0';
             cardElement.style.pointerEvents = 'none';
@@ -1460,7 +1461,7 @@
                 } else {
                     renderTiktok();
                 }
-            }, 150);
+            }, 400);
         };
 
         function createCard(wordData) {
@@ -1537,8 +1538,8 @@
 
                 let speed = parseFloat(slider.value);
                 if (!isDraggingVertical && !isDraggingHorizontal) {
-                    // Cambiado a diffY > 0 para detectar el arrastre hacia ABAJO en lugar de hacia arriba
-                    if (Math.abs(diffY) > Math.abs(diffX) && diffY > 0) {
+                    // Permitimos el arrastre vertical hacia cualquier lado en la versión móvil (normal)
+                    if (Math.abs(diffY) > Math.abs(diffX)) {
                         isDraggingVertical = true;
                     } else if (Math.abs(diffX) > Math.abs(diffY) && speed === 0) {
                         isDraggingHorizontal = true;
@@ -1570,7 +1571,6 @@
                     cardElement.style.transform = ''; 
 
                     if (isSwipingTiktok) {
-                        // Invertido: deslizar ABAJO para Siguiente y ARRIBA para Anterior
                         if (currentDiffY > 50) {
                             nextTiktok(); 
                         } else if (currentDiffY < -50) {
@@ -1587,9 +1587,9 @@
                 inner.style.transition = ''; 
 
                 if (isDraggingVertical) {
-                    // Invertido: requiere haber bajado más de 40px
-                    if (currentDiffY > 40) {
-                        removeCard(cardObj, true);
+                    // Tolerancia para descartar deslizando tanto para arriba como para abajo en móvil
+                    if (Math.abs(currentDiffY) > 40) {
+                        removeCard(cardObj, true, currentDiffY);
                     } else {
                         inner.style.transform = '';
                     }
@@ -1653,23 +1653,29 @@
             return cardObj;
         }
 
-        function removeCard(cardObj, isSwipe = false) {
+        // Modificamos removeCard para que admita la dirección del gesto de descarte (swipeDiffY)
+        function removeCard(cardObj, isSwipe = false, swipeDiffY = 0) {
             let domElement = cardObj.el;
             domElement.classList.add('removing');
             
+            let delay = 400; // Por defecto para botones
+            
             if (isSwipe) {
                 let rot = (Math.random() * 30) - 15;
-                domElement.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out';
-                // Cambiado translateY a positivo (800px) para que la tarjeta vuele hacia ABAJO
-                domElement.style.transform = `translateX(${cardObj.x}px) translateY(800px) rotateZ(${rot}deg)`;
+                // Si el alumno tira para arriba, vuela hacia arriba. Si tira para abajo, vuela hacia abajo.
+                let throwY = swipeDiffY > 0 ? 800 : -800; 
+                domElement.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                domElement.style.transform = `translateX(${cardObj.x}px) translateY(${throwY}px) rotateZ(${rot}deg)`;
+                delay = 300; // Un pelín más rápido al arrastrar
             } else {
                 let dir = Math.random() > 0.5 ? 1 : -1;
                 let throwX = dir * (window.innerWidth + 200);
                 let throwY = (Math.random() * 200) - 100;
                 let rot = dir * (Math.random() * 90 + 45);
                 
-                domElement.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out';
+                domElement.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
                 domElement.style.transform = `translateX(${cardObj.x + throwX}px) translateY(${throwY}px) rotateZ(${rot}deg)`;
+                delay = 400; // Restaurada velocidad normal para escritorio/botones
             }
             
             domElement.style.pointerEvents = 'none'; 
@@ -1694,7 +1700,7 @@
                     finishMsg.style.display = 'flex';
                     cancelAnimationFrame(animationId);
                 }
-            }, 150);
+            }, delay);
         }
 
         function gameLoop() {
