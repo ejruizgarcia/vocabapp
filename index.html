@@ -70,10 +70,13 @@
             color: var(--text-dark);
             height: 100vh;
             height: 100dvh; /* Soporte moderno para evitar problemas con la barra móvil */
+            width: 100vw;
+            position: fixed; /* TRUCO DEFINITIVO: Ancla el body para impedir cualquier arrastre de la página */
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow: hidden; /* Evita que la página completa haga scroll y deje espacio vacío abajo */
+            overflow: hidden; 
+            overscroll-behavior: none; /* Evita el rebote elástico del navegador */
             transition: background-color 0.3s ease;
         }
 
@@ -89,12 +92,18 @@
             flex-direction: column;
             animation: fadeIn 0.4s ease-out;
             flex-grow: 1; 
-            overflow-y: auto; /* Permite scroll interno si los menús son muy largos */
-            scrollbar-width: none; /* Oculta la barra de scroll (Firefox) */
+            overflow-y: auto; /* Permite scroll interno solo si el menú es muy largo */
+            -ms-overflow-style: none; /* Oculta scrollbar en Edge */
+            scrollbar-width: none; /* Oculta scrollbar en Firefox */
         }
         
         .screen::-webkit-scrollbar {
-            display: none; /* Oculta la barra de scroll (Chrome/Safari) */
+            display: none; /* Oculta scrollbar en Chrome/Safari */
+        }
+
+        /* Bloqueo estricto de scroll en la pantalla de juego para evitar el espacio vacío */
+        #screenGame {
+            overflow: hidden !important; 
         }
 
         @keyframes fadeIn {
