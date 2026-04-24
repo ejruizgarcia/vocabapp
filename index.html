@@ -462,12 +462,12 @@
 
         .tiktok-active .flashcard.next-tiktok {
             opacity: 0;
-            transform: translate(-50%, 150%);
+            transform: translate(-50%, -250%); /* Ahora la siguiente viene desde arriba */
         }
 
         .tiktok-active .flashcard.prev-tiktok {
             opacity: 0;
-            transform: translate(-50%, -250%);
+            transform: translate(-50%, 150%); /* Ahora la anterior viene desde abajo */
         }
 
         .flashcard.removing {
@@ -1500,7 +1500,8 @@
 
                 let speed = parseFloat(slider.value);
                 if (!isDraggingVertical && !isDraggingHorizontal) {
-                    if (Math.abs(diffY) > Math.abs(diffX) && diffY < 0) {
+                    // Cambiado a diffY > 0 para detectar el arrastre hacia ABAJO en lugar de hacia arriba
+                    if (Math.abs(diffY) > Math.abs(diffX) && diffY > 0) {
                         isDraggingVertical = true;
                     } else if (Math.abs(diffX) > Math.abs(diffY) && speed === 0) {
                         isDraggingHorizontal = true;
@@ -1532,9 +1533,10 @@
                     cardElement.style.transform = ''; 
 
                     if (isSwipingTiktok) {
-                        if (currentDiffY < -50) {
+                        // Invertido: deslizar ABAJO para Siguiente y ARRIBA para Anterior
+                        if (currentDiffY > 50) {
                             nextTiktok(); 
-                        } else if (currentDiffY > 50) {
+                        } else if (currentDiffY < -50) {
                             prevTiktok(); 
                         } else {
                             renderTiktok(); 
@@ -1548,7 +1550,8 @@
                 inner.style.transition = ''; 
 
                 if (isDraggingVertical) {
-                    if (currentDiffY < -40) {
+                    // Invertido: requiere haber bajado más de 40px
+                    if (currentDiffY > 40) {
                         removeCard(cardObj, true);
                     } else {
                         inner.style.transform = '';
@@ -1620,7 +1623,8 @@
             if (isSwipe) {
                 let rot = (Math.random() * 30) - 15;
                 domElement.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out';
-                domElement.style.transform = `translateX(${cardObj.x}px) translateY(-800px) rotateZ(${rot}deg)`;
+                // Cambiado translateY a positivo (800px) para que la tarjeta vuele hacia ABAJO
+                domElement.style.transform = `translateX(${cardObj.x}px) translateY(800px) rotateZ(${rot}deg)`;
             } else {
                 let dir = Math.random() > 0.5 ? 1 : -1;
                 let throwX = dir * (window.innerWidth + 200);
