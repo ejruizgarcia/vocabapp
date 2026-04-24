@@ -599,6 +599,9 @@
             .btn-remove { display: none !important; }
             .word-es { margin-bottom: 0 !important; }
             
+            /* Ocultar letras del idioma en móvil para dejar solo la flecha doble */
+            .lang-label { display: none; }
+            
             /* Ocultar controles de TikTok de escritorio en móviles */
             .tiktok-active #tiktokNavArrows {
                 display: none !important;
@@ -606,20 +609,20 @@
 
             .game-header {
                 flex-direction: row;
-                gap: 8px;
-                padding: 10px;
+                gap: 5px; /* Reducido para que quepan todos los botones */
+                padding: 8px; /* Reducido */
                 margin-bottom: auto;
             }
             .machinery-controls {
                 width: auto;
                 flex-grow: 1;
                 justify-content: center;
-                padding: 8px 10px;
+                padding: 8px 5px;
             }
             input[type=range] { width: 100%; }
             .btn-action {
-                width: 45px;
-                height: 45px;
+                width: 40px; /* Ligeramente más pequeño para acomodar el nuevo botón */
+                height: 40px;
                 padding: 0;
                 justify-content: center;
                 flex-shrink: 0;
@@ -677,9 +680,16 @@
             </button>
             
             <div class="machinery-controls">
-                <label for="speedSlider">Speed</label>
+                <label for="speedSlider" title="Speed">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </label>
                 <input type="range" id="speedSlider" min="0" max="6" step="0.1" value="1.5">
             </div>
+
+            <!-- Botón ALTERNAR IDIOMA -->
+            <button class="btn-action" onclick="toggleLanguage()" title="Alternar idioma">
+                <span id="langText" style="font-size: 1.2rem;"><span class="lang-label">EN</span> ⇄ <span class="lang-label">ES</span></span>
+            </button>
 
             <!-- Botón MODO TIKTOK / MÓVIL -->
             <button class="btn-action" id="btnTiktok" onclick="toggleTiktokMode()">
@@ -1242,6 +1252,7 @@
         let currentUnit = 1;
         let currentYear = 1;
         let isTiktokMode = false;
+        let isEnToEs = true; // Estado del idioma
 
         const CARD_TOTAL_WIDTH = 250;
 
@@ -1293,6 +1304,14 @@
             }
         }
         slider.addEventListener('input', checkSpeedForArrows);
+
+        function toggleLanguage() {
+            isEnToEs = !isEnToEs;
+            document.getElementById('langText').innerHTML = isEnToEs ? "<span class='lang-label'>EN</span> ⇄ <span class='lang-label'>ES</span>" : "<span class='lang-label'>ES</span> ⇄ <span class='lang-label'>EN</span>";
+            if (currentUnit) {
+                startGame(currentUnit); 
+            }
+        }
 
         function toggleTiktokMode() {
             isTiktokMode = !isTiktokMode;
@@ -1465,15 +1484,18 @@
         };
 
         function createCard(wordData) {
+            let frontText = isEnToEs ? wordData.en.toLowerCase() : wordData.es.toLowerCase();
+            let backText = isEnToEs ? wordData.es.toLowerCase() : wordData.en.toLowerCase();
+
             let cardElement = document.createElement('div');
             cardElement.className = 'flashcard';
             cardElement.innerHTML = `
                 <div class="flashcard-inner">
                     <div class="card-face card-front">
-                        <span class="word-en">${wordData.en.toLowerCase()}</span>
+                        <span class="word-en">${frontText}</span>
                     </div>
                     <div class="card-face card-back">
-                        <span class="word-es">${wordData.es.toLowerCase()}</span>
+                        <span class="word-es">${backText}</span>
                         <button class="btn-remove">Got it! ✔️</button>
                     </div>
                 </div>
